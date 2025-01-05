@@ -135,6 +135,8 @@ export enum AccountStatus {
   SUSPENDED = 'SUSPENDED',
 }
 interface ActivityDetails {
+  passwordResetToken: string;
+  passwordResetExpires: number;
   accountStatus: AccountStatus;
   lastLogin: Date;
   accountCreationDate: Date;
@@ -146,6 +148,7 @@ export enum Role {
 }
 
 export interface IUser extends Document {
+  passwordResetToken: any;
   role: Role;
   personalDetails: PersonalDetails;
   socialLogins: SocialLogin[];

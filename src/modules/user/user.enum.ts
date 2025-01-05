@@ -1,4 +1,4 @@
-export enum UserErrorMessages {
+export enum USER_MESSAGES {
   INVALID_CREDENTIALS = 'Invalid email or password',
   INTERNAL_SERVER_ERROR = 'Internal server error',
   EMAIL_ALREADY_EXISTS = 'Email already exists',
@@ -12,6 +12,8 @@ export enum UserErrorMessages {
   UNAUTHORIZED = 'Unauthorized',
   USER_NOT_FOUND = 'User not found',
   USER_NOT_FOUND_WITH_ID = 'User not found with id',
+  PASSOWRD_RESET_LINK_SEND = 'Password reset link sent successfully',
+  ERROR_SENDING_EMAIL = 'Failed to Send Email',
 }
 
 

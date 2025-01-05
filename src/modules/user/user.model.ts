@@ -100,6 +100,8 @@ const userSchema: Schema = new Schema({
     ],
   },
   activityDetails: {
+    passwordResetToken: { type: String },
+    passwordResetExpires: { type: Date },
     accountStatus: {
       type: String,
       enum: [...Object.values(AccountStatus)],
