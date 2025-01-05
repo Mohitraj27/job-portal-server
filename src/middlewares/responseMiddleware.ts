@@ -6,7 +6,6 @@ export const responseMiddleware = (
   res: Response,
   next: NextFunction,
 ): void => {
-  // Attach sendResponse function to res
   res.sendResponse = (
     statusCode = 200,
     data: any = null,

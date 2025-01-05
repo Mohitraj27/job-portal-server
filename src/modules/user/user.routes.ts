@@ -10,10 +10,10 @@ userRouter.use(responseMiddleware);
 
 userRouter
   .route('/register')
-  .post(validateUserMiddleware, userController.register);
+  .post(userController.register);
 
 userRouter.route('/login').post(validateLoginMiddleware, userController.login);
-
+userRouter.route('/forget-password').post(userController.forgetPassword);
 userRouter
   .route('/protected')
   .get(passport.authenticate('jwt', { session: false }), (req, res) => {
