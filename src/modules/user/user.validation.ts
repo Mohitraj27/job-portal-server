@@ -1,7 +1,6 @@
 import { validateSchema } from '@middlewares/validation.middleware';
 import { z } from 'zod';
 
-// User schema
 const userSchema = z.object({
   phoneNumber: z.object({
     countryCode: z.string().optional(),
@@ -20,7 +19,6 @@ const userSchema = z.object({
   dateOfBirth: z.string().transform((val) => new Date(val)),
 });
 
-// Login schema
 const loginSchema = z.object({
   email: z.string().email('Email is required and must be a valid email'),
   password: z
@@ -29,15 +27,24 @@ const loginSchema = z.object({
     .max(15, 'Password must be no more than 15 characters'),
 });
 
-// Forgot Password schema
 const forgotPasswordSchema = z.object({
   email: z.string().email('Email is required').trim(),
 });
 
-// Middleware usage
+const resetPasswordSchema = z.object({
+  token: z.string().nonempty('Token is required'),
+  newPassword: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .max(15, 'Password must be no more than 15 characters'),
+});
 export const validateUserMiddleware = validateSchema(userSchema, 'body');
 export const validateLoginMiddleware = validateSchema(loginSchema, 'body');
 export const validateForgotPasswordMiddleware = validateSchema(
   forgotPasswordSchema,
+  'body',
+);
+export const validateResetPasswordMiddleware = validateSchema(
+  resetPasswordSchema,
   'body',
 );

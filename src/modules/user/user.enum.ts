@@ -14,6 +14,8 @@ export enum USER_MESSAGES {
   USER_NOT_FOUND_WITH_ID = 'User not found with id',
   PASSOWRD_RESET_LINK_SEND = 'Password reset link sent successfully',
   ERROR_SENDING_EMAIL = 'Failed to Send Email',
+  TOKEN_EXPIRED = 'Token Invalid or expired',
+  PASSOWRD_RESET_SUCCESS = 'Password reset successfully'
 }
 
 

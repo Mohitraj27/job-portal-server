@@ -2,7 +2,7 @@ import { Router } from 'express';
 import passport from 'passport';
 import { userController } from './user.controller';
 import { responseMiddleware } from '@middlewares/responseMiddleware';
-import { validateForgotPasswordMiddleware, validateLoginMiddleware, validateUserMiddleware } from './user.validation';
+import { validateForgotPasswordMiddleware, validateLoginMiddleware, validateUserMiddleware ,validateResetPasswordMiddleware} from './user.validation';
 
 const userRouter = Router();
 
@@ -13,9 +13,8 @@ userRouter
   .post(userController.register);
 
 userRouter.route('/login').post(validateLoginMiddleware, userController.login);
-userRouter
-  .route('/forget-password')
-  .post(validateForgotPasswordMiddleware,userController.forgetPassword);
+userRouter.route('/forget-password').post(validateForgotPasswordMiddleware,userController.forgetPassword);
+userRouter.route('/reset-password').post(validateResetPasswordMiddleware,userController.resetPassword);
 userRouter
   .route('/protected')
   .get(passport.authenticate('jwt', { session: false }), (req, res) => {
