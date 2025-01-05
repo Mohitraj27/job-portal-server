@@ -20,11 +20,7 @@ export const userController = {
         lastName,
         dateOfBirth,
       );
-      res.sendResponse(
-        httpStatus.CREATED,
-        user,
-        USER_MESSAGES.USER_CREATED,
-      );
+      res.sendResponse(httpStatus.CREATED, user, USER_MESSAGES.USER_CREATED);
     } catch (error) {
       next(error);
     }
@@ -51,14 +47,22 @@ export const userController = {
       next(error);
     }
   },
-  forgetPassword: async (  req: Request, res: Response, next: NextFunction, ): Promise<void> => {
+  forgetPassword: async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     try {
       const { email } = req.body;
       const user = await userService.forgetPassword(email);
-      if(!user){
+      if (!user) {
         return throwError(httpStatus.NOT_FOUND, USER_MESSAGES.USER_NOT_FOUND);
       }
-      res.sendResponse(httpStatus.OK, user, USER_MESSAGES.PASSOWRD_RESET_LINK_SEND);
+      res.sendResponse(
+        httpStatus.OK,
+        user,
+        USER_MESSAGES.PASSOWRD_RESET_LINK_SEND,
+      );
     } catch (error) {
       next(error);
     }
