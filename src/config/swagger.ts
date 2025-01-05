@@ -37,10 +37,7 @@ const scanRoutesForSwagger = async (routesDirectory: string) => {
       try {
         // Dynamically import the route file
         const routeModule = await import(filePath);
-        const routePath = filePath
-          .replace(routesDirectory, '')
-          .replace(/\.ts$/, '')
-          .replace(/\.js$/, ''); // Adjust file extension if needed
+       
 
         if (routeModule.router) {
           routeModule.router.stack.forEach((layer: any) => {

@@ -7,9 +7,6 @@ import { throwError } from '@utils/throwError';
 import httpStatus from '@utils/httpStatus';
 import { USER_MESSAGES } from './user.enum';
 import crypto from 'crypto';
-import { send } from 'process';
-import nodemailer from 'nodemailer';
-import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import {sendEmail} from '../../utils/emailService';
 
 export const userService = {

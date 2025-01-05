@@ -1,4 +1,4 @@
-import { z, ZodSchema } from 'zod';
+import { ZodSchema } from 'zod';
 import { Request, Response, NextFunction } from 'express';
 import { throwError } from '@utils/throwError';
 import httpStatus from '@utils/httpStatus';
