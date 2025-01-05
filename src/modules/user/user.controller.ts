@@ -1,10 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { userService } from './user.service';
-import { sendResponse } from '@utils/sendResponse';
 import { throwError } from '@utils/throwError';
 import httpStatus from '@utils/httpStatus';
 import { USER_MESSAGES } from './user.enum';
-import { IUser } from './user.types';
 
 export const userController = {
   register: async (
