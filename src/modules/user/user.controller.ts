@@ -4,6 +4,7 @@ import { sendResponse } from '@utils/sendResponse';
 import { throwError } from '@utils/throwError';
 import httpStatus from '@utils/httpStatus';
 import { USER_MESSAGES } from './user.enum';
+import { IUser } from './user.types';
 
 export const userController = {
   register: async (
@@ -63,6 +64,20 @@ export const userController = {
         user,
         USER_MESSAGES.PASSOWRD_RESET_LINK_SEND,
       );
+      res.sendResponse(httpStatus.OK, null, USER_MESSAGES.PASSOWRD_RESET_LINK_SEND);
+    } catch (error) {
+      next(error);
+    }
+  },
+  resetPassword: async (  req: Request, res: Response, next: NextFunction, ): Promise<void> => {
+    try {
+      const { token, newPassword } = req.body;
+      const user = await userService.resetPassword(token, newPassword);
+      if(!user){
+        return throwError(httpStatus.TOKEN_EXPIRED, USER_MESSAGES.TOKEN_EXPIRED);
+      }
+      
+      return res.sendResponse(httpStatus.OK, null, USER_MESSAGES.PASSOWRD_RESET_SUCCESS);
     } catch (error) {
       next(error);
     }

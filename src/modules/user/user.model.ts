@@ -110,6 +110,8 @@ const userSchema: Schema = new Schema({
     lastLogin: { type: Date, default: Date.now },
     accountCreationDate: { type: Date, default: Date.now },
   },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
 });
 
 const User = mongoose.model<IUser>('User', userSchema);

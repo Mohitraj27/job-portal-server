@@ -135,8 +135,8 @@ export enum AccountStatus {
   SUSPENDED = 'SUSPENDED',
 }
 interface ActivityDetails {
-  passwordResetToken: string;
-  passwordResetExpires: number;
+  passwordResetToken: string | undefined;
+  passwordResetExpires: number | undefined;
   accountStatus: AccountStatus;
   lastLogin: Date;
   accountCreationDate: Date;

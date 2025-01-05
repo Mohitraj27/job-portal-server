@@ -11,34 +11,6 @@ import { send } from 'process';
 import nodemailer from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import {sendEmail} from '../../utils/emailService';
-const sendResetPasswordEmail = async (user: IUser) => {
-  const transporter = nodemailer.createTransport({
-    host: config.SMTP_HOST,
-    port: config.SMTP_PORT,
-    secure: false,
-    auth: {
-      user: config.GOOGLE_EMAIL,
-      pass: config.GOOGLE_PASSWORD,
-    },
-    logger: true,
-    debug: true
-  } as SMTPTransport.Options);
-  const resetLink = `${process.env.BASE_URL}/reset-password?token=${user.activityDetails.passwordResetToken}`;
-  const mailOptions = {
-    from: config.GOOGLE_EMAIL,
-    to: user.personalDetails.email,
-    subject: 'Password Reset',
-    html: `Please click on the following link to reset your password: ${resetLink}`,
-  };
-  try {
-    const info = await transporter.sendMail({
-      ...mailOptions,
-    });
-    console.log('Email sent:', info.response);
-  } catch (error) {
-    return throwError(httpStatus.INTERNAL_SERVER_ERROR, USER_MESSAGES.ERROR_SENDING_EMAIL);
-  }
-}
 
 export const userService = {
   registerUser: async (
@@ -78,7 +50,12 @@ export const userService = {
         USER_MESSAGES.INVALID_CREDENTIALS,
       );
     }
-
+    if ( user && (!(await bcrypt.compare(password, user.personalDetails.password!)))) {
+      throwError(
+        httpStatus.UNAUTHORIZED,
+        USER_MESSAGES.INVALID_CREDENTIALS,
+      );
+    }
     if (
       user &&
       (await bcrypt.compare(password, user.personalDetails.password!))
@@ -104,7 +81,7 @@ export const userService = {
     const resetToken = crypto.randomBytes(32).toString('hex');
 
     user.activityDetails.passwordResetToken = resetToken;
-    user.activityDetails.passwordResetExpires = Date.now() + 3600000;
+    user.activityDetails.passwordResetExpires = Date.now() + 600000;
 
     await user.save();
     const resetLink = `${process.env.BASE_URL}/reset-password?token=${resetToken}`;
@@ -116,4 +93,20 @@ export const userService = {
     await sendEmail(user.personalDetails.email, 'Forget Password Request', emailContent);
     return user;
   },
+
+  resetPassword: async (token: string, newPassword: string): Promise<IUser> => {
+    const user = await User.findOne({
+      'activityDetails.passwordResetToken': token,
+      'activityDetails.passwordResetExpires': { $gt: Date.now() },
+    });
+    if (!user) {
+      return throwError(httpStatus.NOT_FOUND, USER_MESSAGES.TOKEN_EXPIRED);
+    }
+    user.personalDetails.password = await bcrypt.hash(newPassword, 10);
+    user.activityDetails.passwordResetToken = undefined;
+    user.activityDetails.passwordResetExpires =  undefined;
+    await user.save();
+
+    return user;
+  }
 };
