@@ -4,15 +4,16 @@
   "description": "",
   "main": "index.js",
   "_moduleAliases": {
-    "@config": "dist/config",
-    "@middlewares": "dist/middlewares",
-    "@modules": "dist/modules",
-    "@routes": "dist/routes",
-    "@utils": "dist/utils"
+    "@config": "src/config",
+    "@middlewares": "src/middlewares",
+    "@modules": "src/modules",
+    "@routes": "src/routes",
+    "@utils": "src/utils"
   },
   "scripts": {
     "dev": "nodemon --watch src -e ts --exec ts-node-dev -r module-alias/register --files src/server.ts",
     "build": "tsc",
+    "start": "node dist/server.js",
     "postbuild": "node scripts/update-aliases.js",
     "build:start": "npm run build && npm start",
     "lint": "eslint . --ext .ts",

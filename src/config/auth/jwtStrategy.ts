@@ -4,7 +4,7 @@ import userModel from '@modules/user/user.model';
 
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: config.JWT_SECRET || '',
+  secretOrKey: config.JWT_SECRET || 'your_secret_key',
 };
 
 const jwtStrategy = new JwtStrategy(jwtOptions, async (jwtPayload, done) => {

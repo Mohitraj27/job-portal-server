@@ -1,8 +1,8 @@
-import { config } from '@config/env';
 import app from './app';
 import 'module-alias/register';
 import '@config/auth/passport';
 import { connectDB } from '@config/database';
+import { config } from '@config/env';
 
 app.listen(config.port, async () => {
   try {
