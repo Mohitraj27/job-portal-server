@@ -38,6 +38,14 @@ const resetPasswordSchema = z.object({
     .min(8, 'Password must be at least 8 characters')
     .max(15, 'Password must be no more than 15 characters'),
 });
+const changePasswordSchema = z.object({
+  email: z.string().email('Email is required').trim(),
+  newPassword: z
+    .string()
+    .min(8, 'New password must be at least 8 characters')
+    .max(15, 'New password must be no more than 15 characters')
+    .nonempty('New password is required'),
+});
 export const validateUserMiddleware = validateSchema(userSchema, 'body');
 export const validateLoginMiddleware = validateSchema(loginSchema, 'body');
 export const validateForgotPasswordMiddleware = validateSchema(
@@ -46,5 +54,9 @@ export const validateForgotPasswordMiddleware = validateSchema(
 );
 export const validateResetPasswordMiddleware = validateSchema(
   resetPasswordSchema,
+  'body',
+);
+export const validateChangePasswordMiddleware = validateSchema(
+  changePasswordSchema,
   'body',
 );

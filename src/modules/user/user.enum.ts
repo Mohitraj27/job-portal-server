@@ -15,7 +15,9 @@ export enum USER_MESSAGES {
   PASSOWRD_RESET_LINK_SEND = 'Password reset link sent successfully',
   ERROR_SENDING_EMAIL = 'Failed to Send Email',
   TOKEN_EXPIRED = 'Token Invalid or expired',
-  PASSOWRD_RESET_SUCCESS = 'Password reset successfully'
+  PASSOWRD_RESET_SUCCESS = 'Password reset successfully',
+  INVALID_PASSWORD = 'Invalid password',
+  PASSOWRD_CHANGED_SUCCESS = 'Password changed successfully',
 }
 
 

@@ -4,7 +4,6 @@ import { Express } from 'express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
-// Swagger definition
 const options = {
   definition: {
     openapi: '3.0.0',
@@ -19,23 +18,21 @@ const options = {
       },
     ],
   },
-  apis: [], // Not needed since we are generating dynamically
+  apis: [], 
 };
 
-// Swagger spec initialization
 const swaggerSpec = swaggerJSDoc(options);
 
-// Dynamically generate paths from routes
 const scanRoutesForSwagger = async (routesDirectory: string) => {
   const routeFiles = fs.readdirSync(routesDirectory);
   let swaggerPaths: Record<string, any> = {};
 
-  // Loop through each route file
+  
   for (const file of routeFiles) {
     const filePath = path.join(routesDirectory, file);
     if (filePath.endsWith('.ts') || filePath.endsWith('.js')) {
       try {
-        // Dynamically import the route file
+
         const routeModule = await import(filePath);
        
 
@@ -49,7 +46,6 @@ const scanRoutesForSwagger = async (routesDirectory: string) => {
                 swaggerPaths[path] = {};
               }
 
-              // Generate Swagger definitions for each method (GET, POST, PUT, DELETE, etc.)
               if (method === 'GET') {
                 swaggerPaths[path].get = {
                   summary: `GET ${path}`,
@@ -119,7 +115,6 @@ const scanRoutesForSwagger = async (routesDirectory: string) => {
   return swaggerPaths;
 };
 
-// Update the swaggerSpec paths dynamically
 const updateSwaggerPaths = async () => {
   const routesPath = path.join(__dirname, '..', 'routes');
   const paths = await scanRoutesForSwagger(routesPath);
@@ -127,7 +122,6 @@ const updateSwaggerPaths = async () => {
   swaggerSpec.paths = paths;
 };
 
-// Setup Swagger UI with dynamic routes
 export const setupSwagger = (app: Express) => {
   updateSwaggerPaths()
     .then(() => {

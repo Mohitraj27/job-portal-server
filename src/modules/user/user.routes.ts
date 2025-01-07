@@ -6,6 +6,7 @@ import {
   validateForgotPasswordMiddleware,
   validateLoginMiddleware,
   validateResetPasswordMiddleware,
+  validateChangePasswordMiddleware,
 } from './user.validation';
 
 const userRouter = Router();
@@ -18,6 +19,8 @@ userRouter.route('/login').post(validateLoginMiddleware, userController.login);
 userRouter
   .route('/forget-password')
   .post(validateForgotPasswordMiddleware, userController.forgetPassword);
+
+userRouter.route('/change-password').post(validateChangePasswordMiddleware,userController.changePassword);
 userRouter
   .route('/reset-password')
   .post(validateResetPasswordMiddleware, userController.resetPassword);

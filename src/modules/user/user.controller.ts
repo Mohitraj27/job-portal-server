@@ -80,4 +80,16 @@ export const userController = {
       next(error);
     }
   },
+  changePassword: async (  req: Request, res: Response, next: NextFunction, ): Promise<void> => {
+    try {
+      const { email, oldPassword, newPassword } = req.body;
+      const user = await userService.changePassword(email, oldPassword, newPassword);
+      if(!user){
+        return throwError(httpStatus.UNAUTHORIZED, USER_MESSAGES.INVALID_PASSWORD);
+      }
+      return res.sendResponse(httpStatus.OK, null, USER_MESSAGES.PASSOWRD_CHANGED_SUCCESS);
+    } catch (error) {
+      next(error);
+    }
+  }
 };

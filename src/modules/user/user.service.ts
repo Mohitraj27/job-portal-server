@@ -105,5 +105,18 @@ export const userService = {
     await user.save();
 
     return user;
-  }
+  },
+  changePassword: async (email: string, oldPassword: string, newPassword: string): Promise<IUser> => {
+    const user = await User.findOne({ 'personalDetails.email': email });
+    if (!user) {
+      return throwError(httpStatus.UNAUTHORIZED, USER_MESSAGES.USER_NOT_FOUND);
+    }
+    const isMatch = await bcrypt.compare(oldPassword, user.personalDetails.password!);
+    if (!isMatch) {
+      return throwError(httpStatus.UNAUTHORIZED, USER_MESSAGES.INVALID_PASSWORD);
+    }
+    user.personalDetails.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+    return user;
+  },
 };
