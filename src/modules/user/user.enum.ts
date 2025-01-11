@@ -18,6 +18,7 @@ export enum USER_MESSAGES {
   PASSOWRD_RESET_SUCCESS = 'Password reset successfully',
   INVALID_PASSWORD = 'Invalid password',
   PASSOWRD_CHANGED_SUCCESS = 'Password changed successfully',
+  USER_PROFILE_UPDATED = 'User profile updated successfully',
 }
 
 

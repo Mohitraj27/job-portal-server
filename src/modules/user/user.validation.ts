@@ -46,6 +46,9 @@ const changePasswordSchema = z.object({
     .max(15, 'New password must be no more than 15 characters')
     .nonempty('New password is required'),
 });
+const updateUserSchema = z.object({
+  id: z.string().nonempty('User id is required'),
+})
 export const validateUserMiddleware = validateSchema(userSchema, 'body');
 export const validateLoginMiddleware = validateSchema(loginSchema, 'body');
 export const validateForgotPasswordMiddleware = validateSchema(
@@ -60,3 +63,7 @@ export const validateChangePasswordMiddleware = validateSchema(
   changePasswordSchema,
   'body',
 );
+export const validateUpdateUserMiddleware = validateSchema(
+  updateUserSchema,
+  'body',
+)

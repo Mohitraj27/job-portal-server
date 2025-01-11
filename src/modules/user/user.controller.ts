@@ -11,14 +11,37 @@ export const userController = {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const { firstName, email, password, lastName, dateOfBirth } = req.body;
-      const user = await userService.registerUser(
-        email,
-        password,
+      const {
         firstName,
         lastName,
+        email,
+        password,
         dateOfBirth,
-      );
+        phoneNumber,
+        profilePicture,
+        gender,
+        socialLogins,
+        jobSeekerDetails,
+        employerDetails,
+        activityDetails,
+      } = req.body;
+      const userData = {
+        personalDetails: {
+          firstName,
+          lastName,
+          email,
+          password,
+          dateOfBirth,
+          phoneNumber,
+          profilePicture,
+          gender,
+        },
+        socialLogins,
+        jobSeekerDetails,
+        employerDetails,
+        activityDetails,
+      };
+      const user = await userService.registerUser(userData);
       res.sendResponse(httpStatus.CREATED, user, USER_MESSAGES.USER_CREATED);
     } catch (error) {
       next(error);
@@ -91,5 +114,51 @@ export const userController = {
     } catch (error) {
       next(error);
     }
-  }
+  },
+  updateProfile: async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      if (!req.body || !req.body.id) {
+        throwError(httpStatus.UNAUTHORIZED, 'User not authenticated');
+        return;
+      }
+      const userId = req.body?.id; 
+      const {
+        firstName,
+        lastName,
+        phoneNumber,
+        profilePicture,
+        gender,
+        socialLogins,
+        jobSeekerDetails,
+        employerDetails,
+        activityDetails,
+      } = req.body;
+  
+      const updatedUser = await userService.updateUserProfile(
+        userId,
+        {
+          personalDetails: {
+            firstName,
+            lastName,
+            phoneNumber,
+            profilePicture,
+            gender,
+            email: ''
+          },
+          socialLogins,
+          jobSeekerDetails,
+          employerDetails,
+          activityDetails,
+        }
+      );
+  
+      res.sendResponse(httpStatus.OK, updatedUser, USER_MESSAGES.USER_PROFILE_UPDATED);
+    } catch (error) {
+      next(error);
+    }
+  },
 };
