@@ -3,6 +3,7 @@ import { userService } from './user.service';
 import { throwError } from '@utils/throwError';
 import httpStatus from '@utils/httpStatus';
 import { USER_MESSAGES } from './user.enum';
+import User from './user.model';
 
 export const userController = {
   register: async (
@@ -161,4 +162,23 @@ export const userController = {
       next(error);
     }
   },
+  getProfile:async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { role, gender, provider, employmentType, workType, applicationStatus, accountStatus } = req.query;
+        const filters: any = {};
+
+      if (role) filters.role = role;
+      if (gender) filters['personalDetails.gender'] = gender;
+      if (provider) filters['socialLogins.provider'] = provider;
+      if (employmentType) filters['jobSeekerDetails.professionalDetails.employmentType'] = employmentType;
+      if (workType) filters['jobSeekerDetails.jobPreferences.workType'] = workType;
+      if (applicationStatus) filters['jobSeekerDetails.applicationsHistory.status'] = applicationStatus;
+      if (accountStatus) filters['activityDetails.accountStatus'] = accountStatus;
+
+      const users = await User.find({});
+      res.sendResponse(httpStatus.OK, users, USER_MESSAGES.USER_PROFILE_FETCHED);
+    } catch (error) {
+      next(error);
+    }
+  }
 };

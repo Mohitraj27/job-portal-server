@@ -22,6 +22,7 @@ userRouter
   .post(validateForgotPasswordMiddleware, userController.forgetPassword);
 
 userRouter.route('/change-password').post(validateChangePasswordMiddleware,userController.changePassword);
+userRouter.get('/get-profile', userController.getProfile);
 userRouter
   .route('/reset-password')
   .post(validateResetPasswordMiddleware, userController.resetPassword);
