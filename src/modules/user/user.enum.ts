@@ -19,7 +19,11 @@ export enum USER_MESSAGES {
   INVALID_PASSWORD = 'Invalid password',
   PASSOWRD_CHANGED_SUCCESS = 'Password changed successfully',
   USER_PROFILE_UPDATED = 'User profile updated successfully',
-  USER_PROFILE_FETCHED = 'User profile fetched successfully'
+  USER_PROFILE_FETCHED = 'User profile fetched successfully',
+  USER_PROFILE_PICTURE_UPDATED = 'User Profile Picture Updated successfully',
+  FAILED_TO_UPLOAD_PROFILE_PICTURE = 'Failed to Upload Profile Picture to s3',
+  USER_ID_REQUIRED = 'User Id is required',
+  PROFILE_PICTURE_NOT_PROVIDED = 'Profile Picture Not Provided'
 }
 
 

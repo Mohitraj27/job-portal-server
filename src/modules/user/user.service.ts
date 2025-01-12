@@ -160,5 +160,10 @@ export const userService = {
   
     return updatedUser;
   },
-  
+   updateUserProfilePicture : async (userId: any, profilePictureUrl: string) => {
+    return await User.findByIdAndUpdate(
+      userId,
+      { 'personalDetails.profilePicture': profilePictureUrl },
+      { new: true } 
+    )}
 };

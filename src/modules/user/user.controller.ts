@@ -4,6 +4,7 @@ import { throwError } from '@utils/throwError';
 import httpStatus from '@utils/httpStatus';
 import { USER_MESSAGES } from './user.enum';
 import User from './user.model';
+import {uploadProfilePictureToS3} from '../../utils/aws_helper';
 
 export const userController = {
   register: async (
@@ -123,8 +124,7 @@ export const userController = {
   ): Promise<void> => {
     try {
       if (!req.body || !req.body.id) {
-        throwError(httpStatus.UNAUTHORIZED, 'User not authenticated');
-        return;
+        return throwError(httpStatus.UNAUTHORIZED, USER_MESSAGES.USER_NOT_FOUND_WITH_ID);
       }
       const userId = req.body?.id; 
       const {
@@ -178,6 +178,29 @@ export const userController = {
       const users = await User.find({});
       res.sendResponse(httpStatus.OK, users, USER_MESSAGES.USER_PROFILE_FETCHED);
     } catch (error) {
+      next(error);
+    }
+  },
+  uploadProfilePicture: async (req: Request, res: Response, next: NextFunction):Promise<void> => {
+    try{
+      const { userId } = req.query;
+    if ( !userId || typeof userId !== 'string') {
+        return throwError(httpStatus.BAD_REQUEST, USER_MESSAGES.USER_ID_REQUIRED)
+    }
+    const pictureFile = req.file as Express.Multer.File;
+    if(!pictureFile){
+      return throwError(httpStatus.BAD_REQUEST,USER_MESSAGES.PROFILE_PICTURE_NOT_PROVIDED)
+    }
+    const profilePictureUrl: any = await uploadProfilePictureToS3(pictureFile);
+    if (!profilePictureUrl) {
+        return throwError(httpStatus.INTERNAL_SERVER_ERROR, USER_MESSAGES.FAILED_TO_UPLOAD_PROFILE_PICTURE)
+    }
+    const updatedUser = await userService.updateUserProfilePicture(userId, profilePictureUrl);
+    if (!updatedUser) {
+      return throwError(httpStatus.NOT_FOUND, USER_MESSAGES.USER_NOT_FOUND);
+    }
+    res.sendResponse(httpStatus.OK,updatedUser,USER_MESSAGES.USER_PROFILE_PICTURE_UPDATED);
+    }catch(error){
       next(error);
     }
   }
