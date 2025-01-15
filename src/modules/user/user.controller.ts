@@ -4,7 +4,7 @@ import { throwError } from '@utils/throwError';
 import httpStatus from '@utils/httpStatus';
 import { USER_MESSAGES } from './user.enum';
 import User from './user.model';
-import {uploadProfilePictureToS3} from '../../utils/aws_helper';
+import {uploadProfilePictureToS3, uploadResumeToS3} from '@utils/aws_helper';
 
 export const userController = {
   register: async (
@@ -133,7 +133,6 @@ export const userController = {
         phoneNumber,
         profilePicture,
         gender,
-        socialLogins,
         jobSeekerDetails,
         employerDetails,
         activityDetails,
@@ -150,7 +149,6 @@ export const userController = {
             gender,
             email: ''
           },
-          socialLogins,
           jobSeekerDetails,
           employerDetails,
           activityDetails,
@@ -184,9 +182,6 @@ export const userController = {
   uploadProfilePicture: async (req: Request, res: Response, next: NextFunction):Promise<void> => {
     try{
       const { userId } = req.query;
-    if ( !userId || typeof userId !== 'string') {
-        return throwError(httpStatus.BAD_REQUEST, USER_MESSAGES.USER_ID_REQUIRED)
-    }
     const pictureFile = req.file as Express.Multer.File;
     if(!pictureFile){
       return throwError(httpStatus.BAD_REQUEST,USER_MESSAGES.PROFILE_PICTURE_NOT_PROVIDED)
@@ -200,6 +195,26 @@ export const userController = {
       return throwError(httpStatus.NOT_FOUND, USER_MESSAGES.USER_NOT_FOUND);
     }
     res.sendResponse(httpStatus.OK,updatedUser,USER_MESSAGES.USER_PROFILE_PICTURE_UPDATED);
+    }catch(error){
+      next(error);
+    }
+  },
+  uploadResume: async(req: Request, res: Response, next: NextFunction):Promise<void> => {
+    try{
+      const { userId } = req.query;
+    const resumeFile = req.file as Express.Multer.File;
+    if(!resumeFile){
+      return throwError(httpStatus.BAD_REQUEST,USER_MESSAGES.RESUME_NOT_PROVIDED)
+    }
+    const resumeUrl: any = await uploadResumeToS3(resumeFile);
+    if (!resumeUrl) {
+        return throwError(httpStatus.INTERNAL_SERVER_ERROR, USER_MESSAGES.FAILED_TO_UPLOAD_RESUME)
+    }
+    const updatedUser = await userService.updateResume(userId, resumeUrl);
+    if (!updatedUser) {
+      return throwError(httpStatus.NOT_FOUND, USER_MESSAGES.USER_NOT_FOUND);
+    }
+    res.sendResponse(httpStatus.OK,updatedUser,USER_MESSAGES.USER_RESUME_UPDATED);
     }catch(error){
       next(error);
     }

@@ -7,7 +7,7 @@ import { throwError } from '@utils/throwError';
 import httpStatus from '@utils/httpStatus';
 import { USER_MESSAGES } from './user.enum';
 import crypto from 'crypto';
-import {sendEmail} from '../../utils/emailService';
+import {sendEmail} from '@utils/emailService';
 
 export const userService = {
   registerUser: async (
@@ -15,7 +15,7 @@ export const userService = {
   ): Promise<IUser> => {
     const existingUser = await User.findOne({ 'personalDetails.email': userData.personalDetails?.email });
     if (existingUser) {
-      throwError(httpStatus.BAD_REQUEST, 'Email already exists');
+      throwError(httpStatus.BAD_REQUEST, USER_MESSAGES.EMAIL_ALREADY_EXISTS);
     } 
 
     const newUser = new User({
@@ -129,7 +129,7 @@ export const userService = {
     const existingUser = await User.findById(userId);
   
     if (!existingUser) {
-      throwError(httpStatus.NOT_FOUND, 'User not found');
+      throwError(httpStatus.NOT_FOUND, USER_MESSAGES.USER_NOT_FOUND);
     }
   
     if (updateData.personalDetails?.password) {
@@ -145,7 +145,6 @@ export const userService = {
           'personalDetails.phoneNumber': updateData.personalDetails?.phoneNumber || existingUser?.personalDetails.phoneNumber,
           'personalDetails.profilePicture': updateData.personalDetails?.profilePicture || existingUser?.personalDetails.profilePicture,
           'personalDetails.gender': updateData.personalDetails?.gender || existingUser?.personalDetails.gender,
-          socialLogins: updateData.socialLogins || existingUser?.socialLogins,
           jobSeekerDetails: updateData.jobSeekerDetails || existingUser?.jobSeekerDetails,
           employerDetails: updateData.employerDetails || existingUser?.employerDetails,
           activityDetails: updateData.activityDetails || existingUser?.activityDetails,
@@ -155,7 +154,7 @@ export const userService = {
     );
   
     if (!updatedUser) {
-      throwError(httpStatus.NOT_FOUND, 'User not found');
+      throwError(httpStatus.INTERNAL_SERVER_ERROR, USER_MESSAGES.USER_PROFILE_UPDATE_FAILED);  
     }
   
     return updatedUser;
@@ -165,5 +164,12 @@ export const userService = {
       userId,
       { 'personalDetails.profilePicture': profilePictureUrl },
       { new: true } 
-    )}
+    )},
+    updateResume: async (userId: any, resumeUrl: string) => {
+      return await User.findByIdAndUpdate(
+        userId,
+        { 'jobSeekerDetails.professionalDetails.resume': resumeUrl },
+        { new: true } 
+      )
+    }
 };

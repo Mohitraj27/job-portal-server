@@ -8,9 +8,11 @@ import {
   validateResetPasswordMiddleware,
   validateChangePasswordMiddleware,
   validateUpdateUserMiddleware,
+  validateProfilePictureMiddleware,
+  validateResumeUploadMiddleware,
 } from './user.validation';
 
-import {upload} from '../../utils/aws_helper'
+import {upload, uploadResume} from '@utils/aws_helper'
 const userRouter = Router();
 
 userRouter.use(responseMiddleware);
@@ -32,7 +34,8 @@ userRouter
   .get(passport.authenticate('jwt', { session: false }), (req, res) => {
     res.status(200).json({ message: 'Access granted', user: req.user });
   });
-userRouter.post('/upload-profile-picture', upload.single('file'), userController.uploadProfilePicture);
+userRouter.post('/upload-profile-picture', validateProfilePictureMiddleware,upload.single('file'), userController.uploadProfilePicture);
+userRouter.post('/upload-resume',validateResumeUploadMiddleware, uploadResume.single('file'), userController.uploadResume);
 userRouter
   .route('/auth/google')
   .get(passport.authenticate('google', { scope: ['profile', 'email'] }));

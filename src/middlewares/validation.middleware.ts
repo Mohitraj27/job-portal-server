@@ -5,7 +5,7 @@ import httpStatus from '@utils/httpStatus';
 
 export const validateSchema = (
   schema: ZodSchema,
-  key: 'body' | 'query' | 'params',
+  key: 'body' | 'query' | 'params' | 'file',
 ) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const validation = schema.safeParse(req[key]);
