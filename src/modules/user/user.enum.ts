@@ -15,7 +15,20 @@ export enum USER_MESSAGES {
   PASSOWRD_RESET_LINK_SEND = 'Password reset link sent successfully',
   ERROR_SENDING_EMAIL = 'Failed to Send Email',
   TOKEN_EXPIRED = 'Token Invalid or expired',
-  PASSOWRD_RESET_SUCCESS = 'Password reset successfully'
+  PASSOWRD_RESET_SUCCESS = 'Password reset successfully',
+  INVALID_PASSWORD = 'Invalid password',
+  PASSOWRD_CHANGED_SUCCESS = 'Password changed successfully',
+  USER_PROFILE_UPDATED = 'User profile updated successfully',
+  USER_PROFILE_FETCHED = 'User profile fetched successfully',
+  USER_PROFILE_PICTURE_UPDATED = 'User Profile Picture Updated successfully',
+  FAILED_TO_UPLOAD_PROFILE_PICTURE = 'Failed to Upload Profile Picture to s3',
+  USER_ID_REQUIRED = 'User Id is required',
+  PROFILE_PICTURE_NOT_PROVIDED = 'Profile Picture Not Provided',
+  RESUME_NOT_PROVIDED = 'Resume Not Provided',
+  FAILED_TO_UPLOAD_RESUME = 'Failed to Upload Resume to s3',
+  USER_RESUME_UPDATED = 'User Resume Updated successfully',
+  USER_PROFILE_UPDATE_FAILED = 'User Profile Update Failed',
+  ONLY_PDF_FILES_ALLOWED = 'Only PDF files are allowed to upload',
 }
 
 
