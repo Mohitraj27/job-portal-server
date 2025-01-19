@@ -82,11 +82,6 @@ export const userController = {
       if (!user) {
         return throwError(httpStatus.NOT_FOUND, USER_MESSAGES.USER_NOT_FOUND);
       }
-      res.sendResponse(
-        httpStatus.OK,
-        user,
-        USER_MESSAGES.PASSOWRD_RESET_LINK_SEND,
-      );
       res.sendResponse(httpStatus.OK, null, USER_MESSAGES.PASSOWRD_RESET_LINK_SEND);
     } catch (error) {
       next(error);

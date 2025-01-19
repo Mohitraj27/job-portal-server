@@ -8,7 +8,8 @@ import httpStatus from '@utils/httpStatus';
 import { USER_MESSAGES } from './user.enum';
 import crypto from 'crypto';
 import {sendEmail} from '@utils/emailService';
-
+// @ts-ignore
+import {passwordResetTemplate} from '../../email-template/forgetPassword';
 export const userService = {
   registerUser: async (
     userData: Partial<IUser>
@@ -85,11 +86,7 @@ export const userService = {
 
     await user.save();
     const resetLink = `${process.env.BASE_URL}/reset-password?token=${resetToken}`;
-    const emailContent = `
-      <p>Hello ${user.personalDetails.firstName},</p>
-      <p>You requested to reset your password. Please click the link below to reset it:</p>
-      <a href="${resetLink}">Reset Password</a>
-    `;
+    const emailContent = passwordResetTemplate(user,resetLink);
     await sendEmail(user.personalDetails.email, 'Forget Password Request', emailContent);
     return user;
   },
