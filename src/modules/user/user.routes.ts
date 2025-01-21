@@ -36,6 +36,7 @@ userRouter
   });
 userRouter.post('/upload-profile-picture', validateProfilePictureMiddleware,upload.single('file'), userController.uploadProfilePicture);
 userRouter.post('/upload-resume',validateResumeUploadMiddleware, uploadResume.single('file'), userController.uploadResume);
+userRouter.post('/delete-user-profile',userController.deleteUserProfile);
 userRouter
   .route('/auth/google')
   .get(passport.authenticate('google', { scope: ['profile', 'email'] }));

@@ -57,7 +57,11 @@ export const userController = {
   ): Promise<void> => {
     try {
       const { email, password } = req.body;
-
+      const checkIsUserDeleted = await User.findOne({
+        'personalDetails.email': email}).select('isDeleted -_id');
+      if(checkIsUserDeleted?.isDeleted === true){
+        return throwError(httpStatus.UNAUTHORIZED, USER_MESSAGES.USER_NOT_FOUND);
+      }
       const user = await userService.loginUser(email, password);
       if (!user) {
         return throwError(
@@ -211,6 +215,18 @@ export const userController = {
     }
     res.sendResponse(httpStatus.OK,updatedUser,USER_MESSAGES.USER_RESUME_UPDATED);
     }catch(error){
+      next(error);
+    }
+  },
+  deleteUserProfile: async(req: Request, res: Response, next: NextFunction):Promise<void> => {
+    try {
+      const { userId } = req.body;
+      const deletedUser = await userService.deleteUserProfile(userId);
+      if (!deletedUser) {
+        return throwError(httpStatus.NOT_FOUND, USER_MESSAGES.USER_NOT_FOUND);
+      }
+      res.sendResponse(httpStatus.OK,null,USER_MESSAGES.USER_PROFILE_DELETED);
+    } catch(error){
       next(error);
     }
   }

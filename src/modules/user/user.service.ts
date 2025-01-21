@@ -8,8 +8,7 @@ import httpStatus from '@utils/httpStatus';
 import { USER_MESSAGES } from './user.enum';
 import crypto from 'crypto';
 import {sendEmail} from '@utils/emailService';
-// @ts-ignore
-import {passwordResetTemplate} from '../../email-template/forgetPassword';
+import passwordResetTemplate from '@email_template/forgetPassword';
 export const userService = {
   registerUser: async (
     userData: Partial<IUser>
@@ -25,6 +24,7 @@ export const userService = {
         firstName: userData.personalDetails?.firstName,
         lastName: userData.personalDetails?.lastName || '',
         dateOfBirth: userData.personalDetails?.dateOfBirth,
+        password: await bcrypt.hash(userData.personalDetails?.password!, 10),
         email: userData.personalDetails?.email,
         phoneNumber: userData.personalDetails?.phoneNumber,
         profilePicture: userData.personalDetails?.profilePicture,
@@ -168,5 +168,8 @@ export const userService = {
         { 'jobSeekerDetails.professionalDetails.resume': resumeUrl },
         { new: true } 
       )
-    }
+    },
+    deleteUserProfile: async (userId: string) => {
+      return await User.findByIdAndUpdate(userId, { isDeleted: true }, { new: true });
+    },
 };

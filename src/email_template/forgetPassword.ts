@@ -1,4 +1,4 @@
-function passwordResetTemplate(user: any, resetLink: string): string {
+export default function passwordResetTemplate(user: any, resetLink: string): string {
   return `
   <!DOCTYPE html>
   <html>
@@ -139,4 +139,3 @@ function passwordResetTemplate(user: any, resetLink: string): string {
   `;
 }
 
-module.exports = { passwordResetTemplate };
