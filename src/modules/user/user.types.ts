@@ -47,6 +47,9 @@ export enum EmploymentType {
   PART_TIME = 'PART_TIME',
   CONTRACT = 'CONTRACT',
   FREELANCE = 'FREELANCE',
+  PERMANENT = 'PERMANENT',
+  FRESHER = 'FRESHER',
+  INTERNSHIP = 'INTERNSHIP',
 }
 
 interface ProfessionalDetails {
@@ -156,4 +159,5 @@ export interface IUser extends Document {
   jobSeekerDetails?: JobSeekerDetails;
   employerDetails?: EmployerDetails;
   activityDetails: ActivityDetails;
+  isDeleted: boolean;
 }

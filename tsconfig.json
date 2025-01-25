@@ -8,6 +8,7 @@
       "@modules/*": ["src/modules/*"],
       "@routes/*": ["src/routes/*"],
       "@utils/*": ["src/utils/*"],
+      "@email_template/*": ["src/email_template/*"]
     },
       "outDir": "./dist",
     /* Projects */

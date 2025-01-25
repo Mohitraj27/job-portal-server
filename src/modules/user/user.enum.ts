@@ -29,6 +29,7 @@ export enum USER_MESSAGES {
   USER_RESUME_UPDATED = 'User Resume Updated successfully',
   USER_PROFILE_UPDATE_FAILED = 'User Profile Update Failed',
   ONLY_PDF_FILES_ALLOWED = 'Only PDF files are allowed to upload',
+  USER_PROFILE_DELETED = 'User profile deleted successfully'
 }
 
 

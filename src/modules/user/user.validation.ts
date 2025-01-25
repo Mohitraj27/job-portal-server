@@ -94,8 +94,8 @@ const updateUserSchema = z.object({
           }),
         )
         .optional(),
-    }),
-  ),
+    }).optional(),
+  ).optional(),
 
   currentJobTitle: z.string().optional(),
   currentEmployer: z.string().optional(),
