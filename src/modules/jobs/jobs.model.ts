@@ -16,10 +16,12 @@ const JobSchema: Schema<IJob> = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   company: {
-    name: { type: String, required: true },
+    name: { type: String },
     logoUrl: { type: String },
     website: { type: String },
   },
+  category: { type:String,required: true },
+
   location: {
     city: { type: String },
     state: { type: String },
@@ -45,7 +47,12 @@ const JobSchema: Schema<IJob> = new Schema({
       enum: Object.values(JobExperienceLevel),
       required: true,
     },
-    years: { type: Number, required: true, min: 0 },
+    years: {
+      type: Number,
+      required: true,
+      min: 0,
+      max: 50,
+    },
   },
   education: { type: [String], default: [] },
   languages: { type: [String], default: [] },
@@ -66,8 +73,6 @@ const JobSchema: Schema<IJob> = new Schema({
   applicationLink: { type: String, required: true },
   createdBy: {
     userId: { type: mongoose.Types.ObjectId, ref: 'User', required: true },
-    name: { type: String, required: true },
-    email: { type: String, required: true },
   },
   status: {
     type: String,

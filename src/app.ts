@@ -13,6 +13,7 @@ import { notFoundMiddleware } from '@middlewares/notfound.middleware';
 import { setupSwagger } from '@config/swagger';
 
 const app = express();
+
 setupSwagger(app);
 
 

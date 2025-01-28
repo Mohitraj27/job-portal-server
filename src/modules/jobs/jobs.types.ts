@@ -8,6 +8,9 @@ export interface IJob extends Document {
     logoUrl?: string;
     website?: string;
   };
+  category:{
+    _id: mongoose.Types.ObjectId;
+  };
   location: {
     city?: string;
     state?: string;
