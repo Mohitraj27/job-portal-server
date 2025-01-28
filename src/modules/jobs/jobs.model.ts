@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import {
+    Currency,
   IJob,
   JobEmploymentType,
   JobExperienceLevel,
@@ -7,6 +8,9 @@ import {
   JobPriority,
   JobStatus,
 } from './jobs.types';
+
+
+
 
 const JobSchema: Schema<IJob> = new Schema({
   title: { type: String, required: true },
@@ -48,7 +52,11 @@ const JobSchema: Schema<IJob> = new Schema({
   salary: {
     min: { type: Number },
     max: { type: Number },
-    currency: { type: String, default: 'USD' },
+    currency: {
+      type: String,
+      enum: Object.values(Currency),
+      default: 'USD',
+    },
   },
   numberOfOpenings: { type: Number, required: true, min: 1, default: 1 },
   postedAt: { type: Date, default: Date.now },
@@ -80,7 +88,8 @@ const JobSchema: Schema<IJob> = new Schema({
     enum: Object.values(JobModerationStatus),
     default: JobModerationStatus.PENDING,
   },
-  isVerified: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
 });
 
 export default mongoose.model<IJob>('Job', JobSchema);
