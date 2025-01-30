@@ -249,3 +249,15 @@ export enum Currency {
   ZMW = 'ZMW',
   ZWL = 'ZWL',
 }
+
+
+export interface JobQuery {
+  keywords?: string; 
+  location?: { lat: number; lng: number }; 
+  radius?: number; 
+  salaryRange?: { min?: number; max?: number }; 
+  educationLevel?: string[]; 
+  jobType?: string[]; 
+  experienceLevel?: string[]; 
+  datePosted?: string; 
+}

@@ -6,7 +6,6 @@ import { isValidObjectId } from "mongoose";
 
 export const validateObjectId = (req: Request, res: Response, next: NextFunction) => {
   const id = req.params.id;
-console.log(id, 'id');
   if (!isValidObjectId(id)) {
     return throwError(httpStatus.BAD_REQUEST, 'Invalid ObjectId');
   }

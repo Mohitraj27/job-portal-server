@@ -8,4 +8,5 @@ export const JOB_MESSAGES = {
   JOB_ALREADY_EXISTS: 'Job already exists.',
   JOB_ERROR: 'Something went wrong while processing the job.',
   INVALID_ID: 'Invalid job id.',
+  UPDATE_FAILED: 'Failed to update job.',
 };

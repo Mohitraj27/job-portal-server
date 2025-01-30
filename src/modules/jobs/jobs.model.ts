@@ -13,8 +13,8 @@ import {
 
 
 const JobSchema: Schema<IJob> = new Schema({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
+  title: { type: String, required: true, index: true },
+  description: { type: String, required: true, index: true },
   company: {
     name: { type: String },
     logoUrl: { type: String },
@@ -48,10 +48,10 @@ const JobSchema: Schema<IJob> = new Schema({
       required: true,
     },
     years: {
-      type: Number,
-      required: true,
-      min: 0,
-      max: 50,
+      type: {
+        min: { type: Number, required: true, min: 0 },
+        max: { type: Number, required: true, max: 50 },
+      },
     },
   },
   education: { type: [String], default: [] },
