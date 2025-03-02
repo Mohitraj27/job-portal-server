@@ -27,7 +27,7 @@ export const jobController = {
     try {
       const job = await jobService.getSingleJob(req.params.id);
       if (!job) {
-      return throwError(httpStatus.NOT_FOUND, JOB_MESSAGES.JOB_NOT_FOUND);
+        return throwError(httpStatus.NOT_FOUND, JOB_MESSAGES.JOB_NOT_FOUND);
       }
       res.sendResponse(httpStatus.OK, job, JOB_MESSAGES.JOB_FETCHED);
     } catch (error) {
@@ -36,10 +36,11 @@ export const jobController = {
   },
 
   async updateJob(req: Request, res: Response, next: NextFunction) {
-
     try {
-      
-      const job = await jobService.updateJob(req.params.id, req.body.updateData);
+      const job = await jobService.updateJob(
+        req.params.id,
+        req.body.updateData,
+      );
       if (!job) {
         return throwError(httpStatus.NOT_FOUND, JOB_MESSAGES.JOB_NOT_FOUND);
       }
@@ -80,5 +81,5 @@ export const jobController = {
     } catch (error) {
       next(error);
     }
-  }
+  },
 };

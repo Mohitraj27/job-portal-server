@@ -9,7 +9,7 @@
     "@modules": "src/modules",
     "@routes": "src/routes",
     "@utils": "src/utils",
-    "@email_template":"src/email_template"
+    "@email_template": "src/email_template"
   },
   "scripts": {
     "dev": "nodemon --watch src -e ts --exec ts-node-dev -r module-alias/register --files src/server.ts",
