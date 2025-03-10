@@ -6,6 +6,7 @@ import { Router } from 'express';
 import employeeAutomationRouter from '@modules/employee_automation/employee_automation.route';
 import locationRouter from '@modules/location/location.route';
 import messagesRouter from '@modules/messages/messages.routes';
+import employerRouter from '@modules/employer/employer.route';
 
 const router = Router();
 
@@ -15,6 +16,6 @@ router.use('/applied-candidates',appliedCandidatesRouter);
 router.use('/automations',automationsRouter);
 router.use('/employee-automation', employeeAutomationRouter);
 router.use('/locations',locationRouter);
-
+router.use('/employer', employerRouter);
 router.use('/messages', messagesRouter); 
 export default router;
