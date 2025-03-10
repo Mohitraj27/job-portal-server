@@ -1,11 +1,11 @@
 import jobsRouter from '@modules/jobs/jobs.routes';
 import userRouter from '@modules/user/user.routes';
 import appliedCandidatesRouter from '@modules/applied-candidates/applied-candidates.routes';
-import messagesRouter from '@modules/messages/messages.routes';
 import automationsRouter from '@modules/automations/automations.route';
 import { Router } from 'express';
 import employeeAutomationRouter from '@modules/employee_automation/employee_automation.route';
 import locationRouter from '@modules/location/location.route';
+import messagesRouter from '@modules/messages/messages.routes';
 
 const router = Router();
 

@@ -2,8 +2,8 @@
 import { Router } from 'express';
 import messagesController from './messages.controller';
 
-const router = Router();
+const messagesRouter = Router();
 
-router.get('/history/:senderId/:receiverId', messagesController.getChatHistory);
+messagesRouter.get('/history/:senderId/:receiverId', messagesController.getChatHistory);
 
-export default router;
+export default messagesRouter;
