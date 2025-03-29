@@ -161,8 +161,15 @@ export const userController = {
   },
   getProfile:async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { role, gender, provider, employmentType, workType, applicationStatus, accountStatus } = req.query;
-        const filters: any = {};
+      const { userId,role, gender, provider, employmentType, workType, applicationStatus, accountStatus } = req.query;
+      if(userId){
+        const user = await User.findById(userId);
+        if(!user) {
+          return throwError(httpStatus.NOT_FOUND, USER_MESSAGES.USER_NOT_FOUND);
+        }
+        return res.sendResponse(httpStatus.OK, user, USER_MESSAGES.USER_PROFILE_FETCHED);
+      }  
+      const filters: any = {};
 
       if (role) filters.role = role;
       if (gender) filters['personalDetails.gender'] = gender;
@@ -172,7 +179,7 @@ export const userController = {
       if (applicationStatus) filters['jobSeekerDetails.applicationsHistory.status'] = applicationStatus;
       if (accountStatus) filters['activityDetails.accountStatus'] = accountStatus;
 
-      const users = await User.find({});
+      const users = await User.find(filters);
       res.sendResponse(httpStatus.OK, users, USER_MESSAGES.USER_PROFILE_FETCHED);
     } catch (error) {
       next(error);

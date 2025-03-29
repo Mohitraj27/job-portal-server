@@ -4,7 +4,7 @@ import { validateSchema } from '@middlewares/validation.middleware';
 export const EmployerSchema = z.object({
   name: z.string().min(1, 'Employer name is required'),
   description: z.string().min(1, 'Description is required').optional(),
-  email: z.string().email('Invalid email format').optional(),
+  email: z.string().email('Invalid email format'),
   phone: z.string().optional(),
   website: z.string().url('Invalid URL format').optional(),
   establishedDate: z.string().optional(),
@@ -27,10 +27,10 @@ export const EmployerSchema = z.object({
   address: z.string().optional(),
   socialMedia: z
     .object({
-      facebook: z.string().url('Invalid URL format').optional(),
-      twitter: z.string().url('Invalid URL format').optional(),
-      linkedIn: z.string().url('Invalid URL format').optional(),
-      instagram: z.string().url('Invalid URL format').optional(),
+      facebook: z.string().url('Invalid URL format').nullable().optional(),
+      twitter: z.string().url('Invalid URL format').nullable().optional(),
+      linkedIn: z.string().url('Invalid URL format').nullable().optional(),
+      instagram: z.string().url('Invalid URL format').nullable().optional(),
     })
     .optional(),
 });

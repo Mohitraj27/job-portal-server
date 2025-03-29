@@ -11,7 +11,7 @@ const companySchema = z.object({
   name: z.string(),
   logoUrl: z.string().optional(),
   website: z.string().optional(),
-});
+}).optional();
 
 const coordinatesSchema = z.object({
   latitude: z.number().optional(),
@@ -46,7 +46,7 @@ const SalarySchema = z.object({
 const createJobSchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
-  company: companySchema,
+  company: companySchema.optional(),
   category: z.string(),
   location: locationSchema,
   employmentType: z.enum(

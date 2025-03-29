@@ -6,7 +6,7 @@ const userSchema = z.object({
   phoneNumber: z.object({
     countryCode: z.string().optional(),
     number: z.string().nonempty('Phone number is required'),
-  }),
+  }).optional(),
   firstName: z
     .string()
     .min(3, 'First name must be at least 3 characters')
@@ -17,7 +17,7 @@ const userSchema = z.object({
     .max(30, 'Last name must be less than 30 characters')
     .optional(),
   email: z.string().email('Invalid email format'),
-  dateOfBirth: z.string().transform((val) => new Date(val)),
+  dateOfBirth: z.string().transform((val) => new Date(val)).optional(),
 });
 
 const loginSchema = z.object({

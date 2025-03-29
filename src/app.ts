@@ -21,9 +21,13 @@ app.use(express.json());
 app.use(responseMiddleware);
 
 const corsOptions = {
-  origin: ['*'],
-  methods: ['GET', 'POST'],
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000', // Allow frontend URL
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true, // Allow cookies and authentication headers
 };
+app.use(cors(corsOptions));
+
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000,
@@ -43,7 +47,7 @@ app.use(passport.initialize());
 app.use(requestLogger);
 
 app.use(limiter);
-app.use(cors(corsOptions));
+
 
 app.use('/api', router);
 
