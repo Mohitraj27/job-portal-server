@@ -66,7 +66,7 @@ const JobSchema: Schema<IJob> = new Schema({
     },
   },
   numberOfOpenings: { type: Number, required: true, min: 1, default: 1 },
-  postedAt: { type: Date, default: Date.now },
+postedAt: { type: Date, default: () => new Date() },
   validTill: { type: Date, required: true },
   remote: { type: Boolean, default: false },
   benefits: { type: [String], default: [] },

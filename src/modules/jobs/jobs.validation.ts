@@ -7,11 +7,13 @@ import {
   JobStatus,
 } from './jobs.types';
 import { validateSchema } from '@middlewares/validation.middleware';
-const companySchema = z.object({
-  name: z.string(),
-  logoUrl: z.string().optional(),
-  website: z.string().optional(),
-}).optional();
+const companySchema = z
+  .object({
+    name: z.string(),
+    logoUrl: z.string().optional(),
+    website: z.string().optional(),
+  })
+  .optional();
 
 const coordinatesSchema = z.object({
   latitude: z.number().optional(),
@@ -21,7 +23,7 @@ const coordinatesSchema = z.object({
 const locationSchema = z.object({
   city: z.string().optional(),
   state: z.string().optional(),
-  country: z.string().min(1, 'Country is required'), 
+  country: z.string().min(1, 'Country is required'),
   zipCode: z.string().optional(),
   streetAddress: z.string().optional(),
   coordinates: coordinatesSchema.optional(),
@@ -59,7 +61,9 @@ const createJobSchema = z.object({
   languages: z.array(z.string()).default([]),
   salary: SalarySchema,
   numberOfOpenings: z.number().min(1).default(1),
-  postedAt: z.date().default(() => new Date()),
+  postedAt: z
+    .union([z.date(), z.number()])
+    .transform((val) => (typeof val === 'number' ? new Date(val) : val)),
   validTill: z.string(),
   remote: z.boolean().default(false),
   benefits: z.array(z.string()).default([]),
