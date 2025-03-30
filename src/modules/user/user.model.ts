@@ -26,16 +26,17 @@ const userSchema: Schema = new Schema({
     },
     password: { type: String },
     profilePicture: { type: String },
-    dateOfBirth: { type: Date },
+    age: { type: String },
     gender: { type: String, enum: Object.values(Gender) },
     bio: { type: String },
-    address:{
+    address: {
       street: { type: String },
       city: { type: String },
       state: { type: String },
       country: { type: String },
       zipCode: { type: String },
-    }
+    },
+    languages: [{ type: String }],
   },
   socialLogins: [
     {
@@ -46,16 +47,29 @@ const userSchema: Schema = new Schema({
   jobSeekerDetails: {
     education: [
       {
-        qualification: { type: String },
-        specialization: { type: String },
-        institutionName: { type: String },
-        yearOfGraduation: { type: Number },
-        certifications: [
-          {
-            name: { type: String },
-            date: { type: Date },
-          },
-        ],
+       qualification: { type: String },
+        institution: { type: String },
+        startDate: { type: Date },
+        endDate: { type: Date },
+        description: { type: String },
+        grade: { type: String },
+      },
+    ],
+    achivements: [
+      {
+        title: { type: String },
+        organization: { type: String },
+        issuedDate: { type: Number },
+        description: { type: String },
+      },
+    ],
+    professionalExperience: [
+      {
+        companyName: { type: String },
+        jobTitle: { type: String },
+        startDate: { type: Date },
+        endDate: { type: Date },
+        keyAchievements: { type: String },
       },
     ],
     professionalDetails: {
@@ -93,20 +107,20 @@ const userSchema: Schema = new Schema({
       },
     ],
   },
-  employerDetails: {
-    companyName: { type: String },
-    companyLogo: { type: String },
-    companyWebsite: { type: String },
-    companySize: { type: Number },
-    companyIndustry: { type: String },
-    companyDescription: { type: String },
-    jobPostings: [
-      {
-        jobId: { type: Schema.Types.ObjectId, ref: 'Job' },
-        postingDate: { type: Date, default: Date.now },
-      },
-    ],
-  },
+  // employerDetails: {
+  //   companyName: { type: String },
+  //   companyLogo: { type: String },
+  //   companyWebsite: { type: String },
+  //   companySize: { type: Number },
+  //   companyIndustry: { type: String },
+  //   companyDescription: { type: String },
+  //   jobPostings: [
+  //     {
+  //       jobId: { type: Schema.Types.ObjectId, ref: 'Job' },
+  //       postingDate: { type: Date, default: Date.now },
+  //     },
+  //   ],
+  // },
   activityDetails: {
     passwordResetToken: { type: String },
     passwordResetExpires: { type: Date },
@@ -118,7 +132,7 @@ const userSchema: Schema = new Schema({
     lastLogin: { type: Date, default: Date.now },
     accountCreationDate: { type: Date, default: Date.now },
   },
-  isDeleted : { type: Boolean, default: false },
+  isDeleted: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
