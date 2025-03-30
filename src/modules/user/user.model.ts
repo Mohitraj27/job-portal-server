@@ -28,6 +28,14 @@ const userSchema: Schema = new Schema({
     profilePicture: { type: String },
     dateOfBirth: { type: Date },
     gender: { type: String, enum: Object.values(Gender) },
+    bio: { type: String },
+    address:{
+      street: { type: String },
+      city: { type: String },
+      state: { type: String },
+      country: { type: String },
+      zipCode: { type: String },
+    }
   },
   socialLogins: [
     {
