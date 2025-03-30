@@ -37,6 +37,7 @@ const userSchema: Schema = new Schema({
       zipCode: { type: String },
     },
     languages: [{ type: String }],
+    dateOfBirth: { type: Date },
   },
   socialLogins: [
     {
