@@ -2,25 +2,13 @@ import { z } from 'zod';
 import { validateSchema } from '@middlewares/validation.middleware';
 import { ApplicationStatus } from './applied-candidates.types';
 
-const locationSchema = z.object({
-  city: z.string().optional(),
-  state: z.string().optional(),
-  country: z.string().min(1, 'Country is required'),
-});
+
 
 const createApplicationSchema = z.object({
   jobId: z.string().min(1, 'Job ID is required'),
   candidateId: z.string().min(1, 'Candidate ID is required'),
-  candidateName: z.string().min(1, 'Candidate name is required'),
-  candidateJobTitle: z.string().min(1, 'Current job title is required'),
-  candidateEmail: z.string().email('Valid email is required'),
-  candidatePhone: z.string().optional(),
-  location: locationSchema,
-  resumeUrl: z.string().url('Valid resume URL is required'),
-  coverLetter: z.string().optional(),
-  skills: z.array(z.string()).default([]),
-  experience: z.number().optional(),
-  education: z.string().optional(),
+
+  // coverLetter: z.string().optional(),
 });
 
 const updateStatusSchema = z.object({

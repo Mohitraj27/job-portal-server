@@ -12,8 +12,8 @@ import { validateObjectId } from '@middlewares/validateobjectid.middleware';
 
 const appliedCandidatesRouter = Router();
 appliedCandidatesRouter.param('id', validateObjectId);
-appliedCandidatesRouter.param('jobId', validateObjectId);
-appliedCandidatesRouter.param('candidateId', validateObjectId);
+// appliedCandidatesRouter.param('jobId', validateObjectId);
+// appliedCandidatesRouter.param('candidateId', validateObjectId);
 
 appliedCandidatesRouter.use(responseMiddleware);
 
