@@ -50,14 +50,13 @@ export const appliedCandidatesService = {
 
   async getApplicationsByJobId(
     jobId: string,
-    query: AppliedCandidateQuery = {},
+    query: Partial<AppliedCandidateQuery> = {},
   ) {
     const {
       status,
       isShortlisted,
       appliedAfter,
       appliedBefore,
-
       sortBy = 'appliedDate',
       sortOrder = 'desc',
       page = 1,
@@ -126,10 +125,11 @@ export const appliedCandidatesService = {
 
   async getApplicationsByCandidate(
     candidateId: string,
-    query: AppliedCandidateQuery = {},
+    query: Partial<AppliedCandidateQuery> = {},
   ) {
     const {
       status,
+      shortlist,
       page = 1,
       limit = 10,
       sortBy = 'appliedDate',
@@ -140,6 +140,12 @@ export const appliedCandidatesService = {
 
     if (status) {
       filters.status = status;
+    }
+    if (shortlist === 'true') {
+      filters.isShortlisted = true;
+    }
+    if (shortlist !== undefined) {
+      filters.isShortlisted = true;
     }
 
     const skip = (page - 1) * limit;
@@ -197,6 +203,7 @@ export const appliedCandidatesService = {
     }
 
     application.isShortlisted = isShortlisted;
+    application.status = ApplicationStatus.SHORTLISTED;
 
     if (isShortlisted) {
       application.shortlistedDate = new Date();
@@ -236,11 +243,9 @@ export const appliedCandidatesService = {
     }
 
     // Decrement job applicationsCount
-    await mongoose
-      .model('Job')
-      .findByIdAndUpdate(application.jobId, {
-        $inc: { applicationsCount: -1 },
-      });
+    await mongoose.model('Job').findByIdAndUpdate(application.jobId, {
+      $inc: { applicationsCount: -1 },
+    });
 
     return await appliedCandidatesModel.findByIdAndDelete(applicationId);
   },

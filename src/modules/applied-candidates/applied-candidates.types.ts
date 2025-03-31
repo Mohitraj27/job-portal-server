@@ -42,6 +42,7 @@ export interface AppliedCandidateQuery {
   candidateId?: string;
   status?: ApplicationStatus;
   isShortlisted?: boolean;
+  shortlist?: string;
   appliedAfter?: Date;
   appliedBefore?: Date;
   skills?: string[];
