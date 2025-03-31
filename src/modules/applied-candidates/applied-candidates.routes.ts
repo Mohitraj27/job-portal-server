@@ -45,7 +45,7 @@ appliedCandidatesRouter
 
 // Shortlist candidate
 appliedCandidatesRouter
-  .route('/:id/shortlist')
+  .route('/shortlist/:id')
   .patch(validateShortlistCandidateMiddleware, appliedCandidatesController.shortlistCandidate);
 
 // Add notes to application

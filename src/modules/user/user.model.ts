@@ -60,7 +60,7 @@ const userSchema: Schema = new Schema({
       {
         title: { type: String },
         organization: { type: String },
-        issuedDate: { type: Number },
+        issuedDate: { type: Date },
         description: { type: String },
       },
     ],
@@ -74,6 +74,11 @@ const userSchema: Schema = new Schema({
       },
     ],
     professionalDetails: {
+      website: { type: String },
+      linkedIn: { type: String },
+      facebook: { type: String },
+      twitter: { type: String },
+      portfolio: { type: String },
       currentJobTitle: { type: String },
       currentEmployer: { type: String },
       totalExperience: { type: Number },
