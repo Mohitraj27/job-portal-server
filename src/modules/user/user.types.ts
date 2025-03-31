@@ -123,6 +123,15 @@ interface PersonalDetails {
   firstName: string;
   lastName: string;
   email: string;
+  age?: string;
+  address?:{
+    street: string;
+    city: string;
+    state: string;
+    country: string;
+    zipCode: string;
+  },
+bio?: string;
   phoneNumber: {
     countryCode?: string;
     number: string;
