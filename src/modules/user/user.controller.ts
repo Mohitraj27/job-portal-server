@@ -219,7 +219,9 @@ export const userController = {
   uploadResume: async(req: Request, res: Response, next: NextFunction):Promise<void> => {
     try{
       const { userId } = req.query;
-    const resumeFile = req.file as Express.Multer.File;
+      const isVerified = req.query.isVerified === 'true' ? true : req.query.isVerified === 'false' ? false : undefined;
+      const isPublic = req.query.isPublic === 'true' ? true : req.query.isPublic === 'false' ? false : undefined;
+      const resumeFile = req.file as Express.Multer.File;
     if(!resumeFile){
       return throwError(httpStatus.BAD_REQUEST,USER_MESSAGES.RESUME_NOT_PROVIDED)
     }
@@ -227,7 +229,7 @@ export const userController = {
     if (!resumeUrl) {
         return throwError(httpStatus.INTERNAL_SERVER_ERROR, USER_MESSAGES.FAILED_TO_UPLOAD_RESUME)
     }
-    const updatedUser = await userService.updateResume(userId, resumeUrl);
+    const updatedUser = await userService.updateResume(userId, resumeUrl, isVerified, isPublic);
     if (!updatedUser) {
       return throwError(httpStatus.NOT_FOUND, USER_MESSAGES.USER_NOT_FOUND);
     }
