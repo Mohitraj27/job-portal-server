@@ -127,11 +127,18 @@ export const userController = {
       }
       const userId = req.body?.id; 
       const {
-        firstName,
-        lastName,
-        phoneNumber,
-        profilePicture,
-        gender,
+        personalDetails: {
+          firstName,
+          lastName,
+          email,
+          phoneNumber:{
+            number,
+            countryCode
+          },
+          profilePicture,
+          gender,
+          dateOfBirth
+         },
         jobSeekerDetails,
         employerDetails,
         activityDetails,
@@ -143,10 +150,14 @@ export const userController = {
           personalDetails: {
             firstName,
             lastName,
-            phoneNumber,
+            phoneNumber:{
+              number,
+              countryCode
+            },
             profilePicture,
             gender,
-            email: ''
+            email,
+            dateOfBirth
           },
           jobSeekerDetails,
           employerDetails,

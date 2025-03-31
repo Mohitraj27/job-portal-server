@@ -137,14 +137,10 @@ export const userService = {
       userId,
       {
         $set: {
-          'personalDetails.firstName': updateData.personalDetails?.firstName || existingUser?.personalDetails.firstName,
-          'personalDetails.lastName': updateData.personalDetails?.lastName || existingUser?.personalDetails.lastName,
-          'personalDetails.phoneNumber': updateData.personalDetails?.phoneNumber || existingUser?.personalDetails.phoneNumber,
-          'personalDetails.profilePicture': updateData.personalDetails?.profilePicture || existingUser?.personalDetails.profilePicture,
-          'personalDetails.gender': updateData.personalDetails?.gender || existingUser?.personalDetails.gender,
-          jobSeekerDetails: updateData.jobSeekerDetails || existingUser?.jobSeekerDetails,
-          employerDetails: updateData.employerDetails || existingUser?.employerDetails,
-          activityDetails: updateData.activityDetails || existingUser?.activityDetails,
+          personalDetails: updateData?.personalDetails || existingUser?.personalDetails,
+          jobSeekerDetails: updateData?.jobSeekerDetails || existingUser?.jobSeekerDetails,
+          employerDetails: updateData?.employerDetails || existingUser?.employerDetails,
+          activityDetails: updateData?.activityDetails || existingUser?.activityDetails,
         }
       },
       { new: true } 
