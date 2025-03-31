@@ -59,7 +59,7 @@ const userSchema: Schema = new Schema({
       {
         title: { type: String },
         organization: { type: String },
-        issuedDate: { type: Number },
+        issuedDate: { type: Date },
         description: { type: String },
       },
     ],
