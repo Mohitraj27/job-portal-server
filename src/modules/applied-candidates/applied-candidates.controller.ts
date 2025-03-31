@@ -1,9 +1,9 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction,  Request, Response } from 'express';
 import { appliedCandidatesService } from './applied-candidates.service';
 import httpStatus from '@utils/httpStatus';
 import { APPLIED_CANDIDATES_MESSAGES } from './applied-candidates.enum';
 import { throwError } from '@utils/throwError';
-import { ApplicationStatus } from './applied-candidates.types';
+import { ApplicationStatus, AppliedCandidateQuery } from './applied-candidates.types';
 
 export const appliedCandidatesController = {
   async createApplication(req: Request, res: Response, next: NextFunction) {
@@ -39,9 +39,10 @@ export const appliedCandidatesController = {
   
   async getApplicationsByCandidate(req: Request, res: Response, next: NextFunction) {
     try {
+      const query = req.query as unknown as AppliedCandidateQuery;
       const applications = await appliedCandidatesService.getApplicationsByCandidate(
         req.params.candidateId, 
-        req.query
+        query
       );
       res.sendResponse(httpStatus.OK, applications, APPLIED_CANDIDATES_MESSAGES.APPLICATIONS_FETCHED);
     } catch (error) {

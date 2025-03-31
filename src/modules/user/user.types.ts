@@ -51,13 +51,17 @@ export enum EmploymentType {
   FRESHER = 'FRESHER',
   INTERNSHIP = 'INTERNSHIP',
 }
-
+interface Resume {
+  url: string;
+  isVerified: boolean;
+  isPublic: boolean;
+}
 interface ProfessionalDetails {
   currentJobTitle: string;
   currentEmployer: string;
   totalExperience: number;
   skills: string[];
-  resume: string;
+  resume: Resume;
   keyAchievements: string;
   noticePeriod: string;
   currentCTC?: number;

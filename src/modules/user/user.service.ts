@@ -158,11 +158,18 @@ export const userService = {
       { 'personalDetails.profilePicture': profilePictureUrl },
       { new: true } 
     )},
-    updateResume: async (userId: any, resumeUrl: string) => {
+    updateResume: async (userId: any, resumeUrl: string, isVerified?: boolean, isPublic?: boolean) => {
+      const user = await User.findById(userId);
+      const existingResume = user?.jobSeekerDetails?.professionalDetails?.resume ;
       return await User.findByIdAndUpdate(
         userId,
-        { 'jobSeekerDetails.professionalDetails.resume': resumeUrl },
-        { new: true } 
+        {
+          'jobSeekerDetails.professionalDetails.resume': {
+            url: resumeUrl,
+            isVerified: isVerified !== undefined ? isVerified : existingResume?.isVerified,
+            isPublic: isPublic !== undefined ? isPublic : existingResume?.isPublic,
+          },
+        }, { new: true } 
       )
     },
     deleteUserProfile: async (userId: string) => {
