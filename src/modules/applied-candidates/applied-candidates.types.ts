@@ -37,6 +37,13 @@ export enum ApplicationStatus {
   SHORTLISTED= 'SHORTLISTED',
 }
 
+export enum DateFilters {
+  LAST_MONTH = 'LAST_MONTH',
+  LAST_3_MONTH = 'LAST_3_MONTH',
+  LAST_6_MONTH = 'LAST_6_MONTH',
+  LAST_YEAR = 'LAST_YEAR',
+}
+
 export interface AppliedCandidateQuery {
   jobId?: string;
   candidateId?: string;
@@ -53,4 +60,5 @@ export interface AppliedCandidateQuery {
   limit?: number;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
+  appliedDateFilter?: DateFilters
 }

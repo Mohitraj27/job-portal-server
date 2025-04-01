@@ -11,7 +11,8 @@ import { throwError } from '@utils/throwError';
 import { Role } from '../user/user.types';
 import User from '@modules/user/user.model';
 import jobsModel from '@modules/jobs/jobs.model';
-
+import { DateFilters } from './applied-candidates.types';
+import { subMonths } from 'date-fns'
 export const appliedCandidatesService = {
   async createApplication(data: IAppliedCandidate) {
     const existingApplication = await appliedCandidatesModel.findOne({
@@ -125,13 +126,16 @@ export const appliedCandidatesService = {
 
   async getApplicationsByCandidate(
     candidateId: string,
-    query: Partial<AppliedCandidateQuery> = {},
+    query: Partial<AppliedCandidateQuery> = {
+      appliedDateFilter: DateFilters.LAST_MONTH
+    },
   ) {
     const {
       status,
-      shortlist,
       page = 1,
       limit = 10,
+      shortlist,
+      appliedDateFilter,
       sortBy = 'appliedDate',
       sortOrder = 'desc',
     } = query;
@@ -141,7 +145,27 @@ export const appliedCandidatesService = {
     if (status) {
       filters.status = status;
     }
-    if (shortlist === 'true') {
+    if(appliedDateFilter){
+      let startDate: Date;
+      const today = new Date();
+      switch (appliedDateFilter) {
+        case DateFilters.LAST_MONTH:
+          startDate = subMonths(today, 1);
+          break;
+        case DateFilters.LAST_3_MONTH:
+          startDate = subMonths(today, 3);
+          break;
+        case DateFilters.LAST_6_MONTH:
+          startDate = subMonths(today, 6);
+          break;
+        case DateFilters.LAST_YEAR:
+          startDate = subMonths(today, 12);
+          break;
+        default:
+          throw new Error('Invalid date filter');
+      }
+      filters.appliedDate = { $gte: startDate };
+    }    if (shortlist === 'true') {
       filters.isShortlisted = true;
     }
     if (shortlist !== undefined) {

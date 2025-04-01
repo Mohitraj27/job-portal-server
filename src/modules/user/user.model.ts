@@ -83,7 +83,13 @@ const userSchema: Schema = new Schema({
       currentEmployer: { type: String },
       totalExperience: { type: Number },
       skills: [{ type: String }],
-      resume: { type: String },
+      resume: {
+        type: {
+          url: { type: String },
+          isVerified: { type: Boolean, default: false },
+          isPublic: { type: Boolean, default: false },
+        },
+      },
       keyAchievements: { type: String },
       noticePeriod: { type: String },
       currentCTC: { type: Number },

@@ -5,9 +5,9 @@ import httpStatus from './httpStatus';
 import { USER_MESSAGES } from '@modules/user/user.enum';
 
 const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION || 'us-east-1',
+  accessKeyId: process.env.ACCESS_KEY_ID,
+  secretAccessKey: process.env.SECRET_ACCESS_KEY,
+  region: process.env.REGION || 'us-east-1',
 });
 
  export const upload = multer({
@@ -53,7 +53,7 @@ export const uploadResumeToS3 = (file: Express.Multer.File): Promise<string> => 
     }
 
     const params = {
-      Bucket: process.env.AWS_BUCKET_NAME || '',
+      Bucket: process.env.BUCKET_NAME || '',
       Key: `resumes/${Date.now()}-${file.originalname}`, 
       Body: file.buffer, 
       ContentType: file.mimetype, 
