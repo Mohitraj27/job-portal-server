@@ -1,121 +1,136 @@
-import { Server, Socket } from 'socket.io';
-import messagesService from './messages.service';
+import MessageModel from '@modules/messages/messages.model';
+import WebSocket, { Server as WebSocketServer } from 'ws';
 
-class WebSocketService {
-  private io: Server;
-
-  constructor(io: Server) {
-    this.io = io;
-  }
-
-  initialize() {
-    console.log('Initializing WebSocket Service...');
-
-    this.io.on('connection', (socket: Socket) => {
-      console.log(`✅ New client connected: ${socket.id}`);
-
-      // Have users join their own user ID as a room
-      socket.on('joinUser', (userId: string) => {
-        if (!userId) {
-          console.error('❌ joinUser error: Missing userId');
-          return;
-        }
-
-        // Leave any previous rooms (optional)
-        socket.rooms.forEach((room) => {
-          if (room !== socket.id) {
-            socket.leave(room);
-          }
-        });
-
-        // Join a room with the user's ID
-        socket.join(userId);
-        console.log(`👤 User ${userId} joined their personal room`);
-
-        // Confirm to the client
-        socket.emit('joinedRoom', { userId, success: true });
-      });
-
-      // Handle sending messages
-      socket.on('sendMessage', async (data) => {
-        console.log(`📩 Received 'sendMessage' event from ${socket.id}:`, data);
-
-        const { senderId, receiverId, content } = data;
-
-        if (!senderId || !receiverId || !content) {
-          console.error(
-            '❌ sendMessage error: Missing senderId, receiverId, or content',
-            data,
-          );
-          return;
-        }
-
-        try {
-          console.log(
-            `💾 Saving message from ${senderId} to ${receiverId}: "${content}"`,
-          );
-          const savedMessage = await messagesService.saveMessage(
-            senderId,
-            receiverId,
-            content,
-          );
-          console.log('✅ Message saved successfully:', savedMessage);
-
-          // Emit message to receiver and sender
-          console.log(
-            `📡 Emitting message to receiver ${receiverId} and sender ${senderId}`,
-          );
-          // Use the io instance to emit to specific rooms
-          this.io.to(receiverId).emit('message', savedMessage);
-          // Also send back to sender
-          this.io.to(senderId).emit('message', savedMessage);
-        } catch (error) {
-          console.error('❌ Error saving message:', error);
-          socket.emit('error', { message: 'Failed to send message' });
-        }
-      });
-
-      // Handle chat history retrieval
-      socket.on('getChatHistory', async ({ senderId, receiverId }) => {
-        console.log(
-          `📜 Received 'getChatHistory' event for ${senderId} and ${receiverId}`,
-        );
-
-        if (!senderId || !receiverId) {
-          console.error(
-            '❌ getChatHistory error: Missing senderId or receiverId',
-          );
-          return;
-        }
-
-        try {
-          console.log(
-            `🔍 Fetching chat history between ${senderId} and ${receiverId}`,
-          );
-          const chatHistory = await messagesService.getChatHistory(
-            senderId,
-            receiverId,
-          );
-          console.log('✅ Chat history retrieved successfully');
-
-          socket.emit('chatHistory', chatHistory);
-        } catch (error) {
-          console.error('❌ Error fetching chat history:', error);
-          socket.emit('error', { message: 'Failed to fetch chat history' });
-        }
-      });
-
-      // Handle client disconnect
-      socket.on('disconnect', () => {
-        console.log(`❌ Client disconnected: ${socket.id}`);
-      });
-
-      // Log if any unexpected errors occur
-      socket.on('error', (error) => {
-        console.error(`🚨 Socket error from ${socket.id}:`, error);
-      });
-    });
-  }
+interface JoinUserEvent {
+  event: 'joinUser';
+  userId: string;
 }
 
-export default WebSocketService;
+interface SendMessageEvent {
+  event: 'sendMessage';
+  senderId: string;
+  receiverId: string;
+  content: string;
+}
+
+interface GetChatHistoryEvent {
+  event: 'getChatHistory';
+  senderId: string;
+  receiverId: string;
+}
+
+type ClientMessage = JoinUserEvent | SendMessageEvent | GetChatHistoryEvent;
+
+export const socketService = (wss: WebSocketServer) => {
+  wss.on('connection', (ws: WebSocket) => {
+    console.log('🔗 New WebSocket connection established');
+
+    // When a message is received from the client
+    ws.on('message', async (message: string) => {
+      try {
+        const data: ClientMessage = JSON.parse(message);
+
+        // Handle user join event
+        if (data.event === 'joinUser') {
+          const { userId } = data;
+          if (!userId) {
+            console.error('❌ joinUser error: Missing userId');
+            return;
+          }
+          console.log(`👤 User ${userId} joined`);
+          ws.send(
+            JSON.stringify({ event: 'joinedRoom', userId, success: true }),
+          );
+        }
+
+        // Handle sendMessage event
+        if (data.event === 'sendMessage') {
+          const { senderId, receiverId, content } = data;
+          if (!senderId || !receiverId || !content) {
+            console.error('❌ sendMessage error: Missing fields');
+            return;
+          }
+
+          // Log the message in the server
+          console.log(
+            `📩 Received message from ${senderId} to ${receiverId}: "${content}"`,
+          );
+
+          // Save the message to MongoDB
+          try {
+            const newMessage = new MessageModel({
+              senderId,
+              receiverId,
+              content,
+            });
+            await newMessage.save();
+            console.log('✅ Message saved to MongoDB');
+          } catch (error) {
+            console.error('❌ Error saving message to MongoDB:', error);
+          }
+
+          // Send message to receiver if they are connected
+          wss.clients.forEach((client: WebSocket) => {
+            if (client.readyState === WebSocket.OPEN) {
+              const userId = (client as any).userId; // Store userId on WebSocket client instance
+              if (userId === receiverId) {
+                client.send(
+                  JSON.stringify({
+                    event: 'message',
+                    senderId,
+                    receiverId,
+                    content,
+                  }),
+                );
+              }
+            }
+          });
+
+          // Also send back to sender
+          ws.send(
+            JSON.stringify({ event: 'message', senderId, receiverId, content }),
+          );
+        }
+
+        // Handle getChatHistory event (fetch from MongoDB)
+        if (data.event === 'getChatHistory') {
+          const { senderId, receiverId } = data;
+          if (!senderId || !receiverId) {
+            console.error(
+              '❌ getChatHistory error: Missing senderId or receiverId',
+            );
+            return;
+          }
+
+          // Fetch chat history from MongoDB
+          try {
+            const chatHistory = await MessageModel.find({
+              $or: [
+                { senderId, receiverId },
+                { senderId: receiverId, receiverId: senderId },
+              ],
+            }).sort({ timestamp: 1 }); // Sort by timestamp (ascending)
+
+            console.log(
+              `📜 Fetched chat history for ${senderId} & ${receiverId}`,
+            );
+            ws.send(JSON.stringify({ event: 'chatHistory', chatHistory }));
+          } catch (error) {
+            console.error(
+              '❌ Error fetching chat history from MongoDB:',
+              error,
+            );
+          }
+        }
+      } catch (error) {
+        console.error('❌ Error:', error);
+        ws.send(JSON.stringify({ event: 'error', message: 'Invalid request' }));
+      }
+    });
+
+    // Handle WebSocket close event
+    ws.on('close', () => {
+      console.log('❌ WebSocket Disconnected');
+    });
+  });
+};
