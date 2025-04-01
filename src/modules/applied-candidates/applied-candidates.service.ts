@@ -299,4 +299,23 @@ export const appliedCandidatesService = {
       isShortlisted: true,
     });
   },
+
+  async toggleBookmark(jobId: string, candidateId: string, isBookmarked: boolean) {
+    const application = await appliedCandidatesModel.findOne({
+      jobId,
+      candidateId
+    });
+    
+    if (!application) {
+      return throwError(
+        httpStatus.NOT_FOUND,
+        APPLIED_CANDIDATES_MESSAGES.APPLICATION_NOT_FOUND
+      );
+    }
+    
+    application.isBookmarked = isBookmarked;
+    application.updatedAt = new Date();
+    
+    return await application.save();
+  }
 };

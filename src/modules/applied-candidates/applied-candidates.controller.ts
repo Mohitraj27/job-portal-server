@@ -118,5 +118,20 @@ export const appliedCandidatesController = {
     } catch (error) {
       next(error);
     }
+  },
+  
+  async toggleBookmark(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { jobId, candidateId, isBookmarked } = req.body;
+      
+      const application = await appliedCandidatesService.toggleBookmark(jobId, candidateId, isBookmarked);
+      
+      const message = isBookmarked ?  APPLIED_CANDIDATES_MESSAGES.APPLICATION_BOOKMARKED : 
+       APPLIED_CANDIDATES_MESSAGES.APPLICATION_UNBOOKMARKED;
+      
+      res.sendResponse(httpStatus.OK, application, message);
+    } catch (error) {
+      next(error);
+    }
   }
 };

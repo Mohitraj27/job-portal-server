@@ -6,7 +6,8 @@ import {
   validateUpdateStatusMiddleware,
   validateShortlistCandidateMiddleware,
   validateAddNotesMiddleware,
-  validateGetApplicationsQueryMiddleware
+  validateGetApplicationsQueryMiddleware,
+  validateBookmarkMiddleware,
 } from './applied-candidates.validation';
 import { validateObjectId } from '@middlewares/validateobjectid.middleware';
 
@@ -63,4 +64,8 @@ appliedCandidatesRouter
   .route('/shortlisted-count/:jobId')
   .get(appliedCandidatesController.getShortlistedCount);
 
+// Add bookmark to application
+appliedCandidatesRouter
+  .route('/bookmark-applied-candidate')
+  .post(validateBookmarkMiddleware,appliedCandidatesController.toggleBookmark);
 export default appliedCandidatesRouter;

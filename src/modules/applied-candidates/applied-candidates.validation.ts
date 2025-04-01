@@ -41,6 +41,13 @@ const getApplicationsQuerySchema = z.object({
   sortOrder: z.enum(['asc', 'desc']).default('desc')
 });
 
+const validateBookmarkSchema = z.object({
+  jobId: z.string().min(1, 'Job ID is required'),
+  candidateId: z.string().min(1, 'Candidate ID is required'),
+  isBookmarked: z.boolean()
+})
+
+export const validateBookmarkMiddleware = validateSchema(validateBookmarkSchema, 'body');
 export const validateCreateApplicationMiddleware = validateSchema(createApplicationSchema, 'body');
 export const validateUpdateStatusMiddleware = validateSchema(updateStatusSchema, 'body');
 export const validateShortlistCandidateMiddleware = validateSchema(shortlistCandidateSchema, 'body');

@@ -22,6 +22,7 @@ export interface IAppliedCandidate extends Document {
   skills: string[];
   experience?: number;
   education?: string;
+  isBookmarked: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
