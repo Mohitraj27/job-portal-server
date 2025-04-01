@@ -1,11 +1,10 @@
 import MessageModel from './messages.model';
 
-class MessagesService {
+export const  MessagesService = {
     async getMessagesByRoomId(joinedRoomId: string) {
-      return MessageModel.find({ joinedRoomId })
-        .sort({ createdAt: 1 })
-        .lean();
-    }
+      const data = await MessageModel.find({ joinedRoomId: joinedRoomId });
+      return data;
+    },
   
   
   async saveMessage(senderId: string, receiverId: string, content: string, joinedRoomId: string) {
@@ -18,7 +17,7 @@ class MessagesService {
 
     await message.save();
     return message;
-  }
+  },
 
   async getChatHistory(senderId: string, receiverId: string) {
     return MessageModel.find({
@@ -32,5 +31,3 @@ class MessagesService {
   }
 }
 
-const messagesService = new MessagesService();
-export default messagesService;

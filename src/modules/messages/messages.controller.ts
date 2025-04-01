@@ -1,24 +1,22 @@
 import { Request, Response, NextFunction } from 'express';
-import messagesService from './messages.service';
+import {MessagesService} from './messages.service';
+import {MESSAGES_WEB_SOCKETS } from './messages.enum';
 
 export const MessagesController = {
   async getChatHistory(req: Request, res: Response, next: NextFunction) {
-    const { senderId, receiverId } = req.params;
+    const { senderId, receiverId } = req.body;
     try {
-      const chatHistory = await messagesService.getChatHistory(senderId, receiverId);
-      res.sendResponse(200, chatHistory, 'Chat history fetched successfully');
+      const chatHistory = await MessagesService.getChatHistory(senderId, receiverId);
+      res.sendResponse(200, chatHistory, MESSAGES_WEB_SOCKETS.MESSAGES_HISTORY_FETCHED);
     } catch (error) {
       next(error);
     }
   },
   async getMessagesByRoomId(req: Request, res: Response, next: NextFunction) {
-    const { joinedRoomId } = req.params;
+    const { joinedRoomId } = req.body;
     try {
-    if (!joinedRoomId) {
-      return res.status(400).json({ message: 'Missing joinedRoomId' });
-    }
-     const messages = await messagesService.getMessagesByRoomId(joinedRoomId);
-      res.status(200).json({ success: true, data: messages });
+     const messages = await MessagesService.getMessagesByRoomId(joinedRoomId);
+     res.sendResponse(200, messages, MESSAGES_WEB_SOCKETS.MESSAGES_BASED_ON_ROOMID);
     } catch (error) {
       next(error);
     }
