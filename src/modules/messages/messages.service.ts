@@ -1,11 +1,19 @@
 import MessageModel from './messages.model';
 
 class MessagesService {
-  async saveMessage(senderId: string, receiverId: string, content: string) {
+    async getMessagesByRoomId(joinedRoomId: string) {
+      return MessageModel.find({ joinedRoomId })
+        .sort({ createdAt: 1 })
+        .lean();
+    }
+  
+  
+  async saveMessage(senderId: string, receiverId: string, content: string, joinedRoomId: string) {
     const message = new MessageModel({
       senderId,
       receiverId,
       content,
+      joinedRoomId,
     });
 
     await message.save();

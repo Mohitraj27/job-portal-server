@@ -11,12 +11,14 @@ interface SendMessageEvent {
   senderId: string;
   receiverId: string;
   content: string;
+  joinedRoomId: string;
 }
 
 interface GetChatHistoryEvent {
   event: 'getChatHistory';
   senderId: string;
   receiverId: string;
+  joinedRoomId: string;
 }
 
 type ClientMessage = JoinUserEvent | SendMessageEvent | GetChatHistoryEvent;
@@ -45,8 +47,8 @@ export const socketService = (wss: WebSocketServer) => {
 
         // Handle sendMessage event
         if (data.event === 'sendMessage') {
-          const { senderId, receiverId, content } = data;
-          if (!senderId || !receiverId || !content) {
+          const { senderId, receiverId, content, joinedRoomId } = data;
+          if (!senderId || !receiverId || !content || !joinedRoomId) {
             console.error('❌ sendMessage error: Missing fields');
             return;
           }
@@ -62,6 +64,7 @@ export const socketService = (wss: WebSocketServer) => {
               senderId,
               receiverId,
               content,
+              joinedRoomId,
             });
             await newMessage.save();
             console.log('✅ Message saved to MongoDB');
@@ -94,8 +97,8 @@ export const socketService = (wss: WebSocketServer) => {
 
         // Handle getChatHistory event (fetch from MongoDB)
         if (data.event === 'getChatHistory') {
-          const { senderId, receiverId } = data;
-          if (!senderId || !receiverId) {
+          const { senderId, receiverId , joinedRoomId} = data;
+          if (!senderId || !receiverId|| !joinedRoomId) {
             console.error(
               '❌ getChatHistory error: Missing senderId or receiverId',
             );

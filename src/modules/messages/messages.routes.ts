@@ -1,9 +1,9 @@
 
 import { Router } from 'express';
-import messagesController from './messages.controller';
+import {MessagesController} from './messages.controller';
 
 const messagesRouter = Router();
-
-messagesRouter.get('/history/:senderId/:receiverId', messagesController.getChatHistory);
+messagesRouter.route('/get-messages').get(MessagesController.getMessagesByRoomId);
+messagesRouter.route('/history/:senderId/:receiverId').get(MessagesController.getChatHistory);
 
 export default messagesRouter;

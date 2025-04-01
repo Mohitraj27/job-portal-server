@@ -16,6 +16,11 @@ const MessageSchema: Schema = new Schema(
     content: { 
       type: String, 
       required: true 
+    },
+    joinedRoomId:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
     }
   },
   {
