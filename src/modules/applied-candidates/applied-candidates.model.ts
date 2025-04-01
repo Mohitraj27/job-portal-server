@@ -26,6 +26,8 @@ const AppliedCandidateSchema: Schema<IAppliedCandidate | any> = new Schema({
 
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
+  isBookmarked: { type: Boolean, default: false },
+  isDeleted: { type: Boolean, default: false },
 });
 
 // Create indexes for common queries

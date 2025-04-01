@@ -9,4 +9,6 @@ export const APPLIED_CANDIDATES_MESSAGES = {
     CANDIDATE_SHORTLISTED: 'Candidate shortlisted successfully',
     CANDIDATE_UNSHORTLISTED: 'Candidate removed from shortlist',
     STATUS_UPDATED: 'Application status updated successfully',
+    APPLICATION_BOOKMARKED: 'Application has been bookmarked successfully',
+    APPLICATION_UNBOOKMARKED: 'Application has been removed from bookmarks',
   };
