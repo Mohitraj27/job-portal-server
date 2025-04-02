@@ -93,6 +93,7 @@ export const socketService = (wss: WebSocketServer) => {
           ws.send(
             JSON.stringify({ event: 'message', senderId, receiverId, content }),
           );
+          return;
         }
 
         // Handle getChatHistory event (fetch from MongoDB)

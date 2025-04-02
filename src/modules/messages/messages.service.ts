@@ -12,7 +12,7 @@ export const  MessagesService = {
       // Fetch all user details in one query
       const users = await User.find({
         _id: { $in: Array.from(userIds) }
-      }).populate('personalDetails').lean();
+      }).select('role personalDetails.firstName personalDetails.lastName').lean();
       
       // Create a map for quick lookup
       const userMap: { [x: string]: any }= {};
