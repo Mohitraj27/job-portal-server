@@ -2,7 +2,7 @@ import MessageModel from './messages.model';
 
 export const  MessagesService = {
     async getMessagesByRoomId(joinedRoomId: string) {
-      const data = await MessageModel.find({ joinedRoomId: joinedRoomId });
+      const data = await MessageModel.find({ joinedRoomId: joinedRoomId }).sort({ createdAt: 1 }).lean();
       return data;
     },
   

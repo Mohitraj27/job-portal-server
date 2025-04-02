@@ -13,9 +13,9 @@ export const MessagesController = {
     }
   },
   async getMessagesByRoomId(req: Request, res: Response, next: NextFunction) {
-    const { joinedRoomId } = req.body;
+    const { joinedRoomId } = req.query;
     try {
-     const messages = await MessagesService.getMessagesByRoomId(joinedRoomId);
+     const messages = await MessagesService.getMessagesByRoomId(joinedRoomId as string);
      res.sendResponse(200, messages, MESSAGES_WEB_SOCKETS.MESSAGES_BASED_ON_ROOMID);
     } catch (error) {
       next(error);

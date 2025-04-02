@@ -8,5 +8,5 @@ const chatHistorySchema = z.object({
 const messageSchemaByRoomId = z.object({
     joinedRoomId: z.string().min(1, 'Joined ID is required')
 })
-export const validategetMessagesByRoomId  = validateSchema(messageSchemaByRoomId, 'body');
+export const validategetMessagesByRoomId  = validateSchema(messageSchemaByRoomId, 'query');
 export const validatechatHistorySchema = validateSchema(chatHistorySchema, 'body');
