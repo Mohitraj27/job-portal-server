@@ -2,25 +2,25 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from './user.model';
 import { config } from '@config/env';
-import { AccountStatus, IUser, Role } from './user.types';
+import { AccountStatus, IUser } from './user.types';
 import { throwError } from '@utils/throwError';
 import httpStatus from '@utils/httpStatus';
 import { USER_MESSAGES } from './user.enum';
 import crypto from 'crypto';
-import {sendEmail} from '@utils/emailService';
+import { sendEmail } from '@utils/emailService';
 import passwordResetTemplate from '@email_template/forgetPassword';
 export const userService = {
-  registerUser: async (
-    userData: Partial<IUser>
-  ): Promise<IUser> => {
-    const existingUser = await User.findOne({ 'personalDetails.email': userData.personalDetails?.email });
+  registerUser: async (userData: Partial<IUser>): Promise<IUser> => {
+    const existingUser = await User.findOne({
+      'personalDetails.email': userData.personalDetails?.email,
+    });
     if (existingUser) {
       throwError(httpStatus.BAD_REQUEST, USER_MESSAGES.EMAIL_ALREADY_EXISTS);
-    } 
+    }
 
     const newUser = new User({
-        role: Role.JOBSEEKER,
-        personalDetails: {
+      role: userData.role,
+      personalDetails: {
         firstName: userData.personalDetails?.firstName,
         lastName: userData.personalDetails?.lastName || '',
         dateOfBirth: userData.personalDetails?.dateOfBirth,
@@ -34,7 +34,8 @@ export const userService = {
       jobSeekerDetails: userData.jobSeekerDetails || {},
       employerDetails: userData.employerDetails || {},
       activityDetails: {
-        accountStatus: userData.activityDetails?.accountStatus || AccountStatus.ACTIVE,
+        accountStatus:
+          userData.activityDetails?.accountStatus || AccountStatus.ACTIVE,
       },
       createdAt: Date.now(),
       updatedAt: Date.now(),
@@ -46,16 +47,13 @@ export const userService = {
       '+personalDetails.password',
     );
     if (!user) {
-      throwError(
-        httpStatus.UNAUTHORIZED,
-        USER_MESSAGES.INVALID_CREDENTIALS,
-      );
+      throwError(httpStatus.UNAUTHORIZED, USER_MESSAGES.INVALID_CREDENTIALS);
     }
-    if ( user && (!(await bcrypt.compare(password, user.personalDetails.password!)))) {
-      throwError(
-        httpStatus.UNAUTHORIZED,
-        USER_MESSAGES.INVALID_CREDENTIALS,
-      );
+    if (
+      user &&
+      !(await bcrypt.compare(password, user.personalDetails.password!))
+    ) {
+      throwError(httpStatus.UNAUTHORIZED, USER_MESSAGES.INVALID_CREDENTIALS);
     }
     if (
       user &&
@@ -86,8 +84,12 @@ export const userService = {
 
     await user.save();
     const resetLink = `${process.env.BASE_URL}/reset-password?token=${resetToken}`;
-    const emailContent = passwordResetTemplate(user,resetLink);
-    await sendEmail(user.personalDetails.email, 'Forget Password Request', emailContent);
+    const emailContent = passwordResetTemplate(user, resetLink);
+    await sendEmail(
+      user.personalDetails.email,
+      'Forget Password Request',
+      emailContent,
+    );
     return user;
   },
 
@@ -101,19 +103,29 @@ export const userService = {
     }
     user.personalDetails.password = await bcrypt.hash(newPassword, 10);
     user.activityDetails.passwordResetToken = undefined;
-    user.activityDetails.passwordResetExpires =  undefined;
+    user.activityDetails.passwordResetExpires = undefined;
     await user.save();
 
     return user;
   },
-  changePassword: async (email: string, oldPassword: string, newPassword: string): Promise<IUser> => {
+  changePassword: async (
+    email: string,
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<IUser> => {
     const user = await User.findOne({ 'personalDetails.email': email });
     if (!user) {
       return throwError(httpStatus.UNAUTHORIZED, USER_MESSAGES.USER_NOT_FOUND);
     }
-    const isMatch = await bcrypt.compare(oldPassword, user.personalDetails.password!);
+    const isMatch = await bcrypt.compare(
+      oldPassword,
+      user.personalDetails.password!,
+    );
     if (!isMatch) {
-      return throwError(httpStatus.UNAUTHORIZED, USER_MESSAGES.INVALID_PASSWORD);
+      return throwError(
+        httpStatus.UNAUTHORIZED,
+        USER_MESSAGES.INVALID_PASSWORD,
+      );
     }
     user.personalDetails.password = await bcrypt.hash(newPassword, 10);
     await user.save();
@@ -124,55 +136,78 @@ export const userService = {
     updateData: Partial<IUser>,
   ): Promise<IUser | null> => {
     const existingUser = await User.findById(userId);
-  
+
     if (!existingUser) {
       throwError(httpStatus.NOT_FOUND, USER_MESSAGES.USER_NOT_FOUND);
     }
-  
+
     if (updateData.personalDetails?.password) {
-      updateData.personalDetails.password = await bcrypt.hash(updateData.personalDetails.password, 10);
+      updateData.personalDetails.password = await bcrypt.hash(
+        updateData.personalDetails.password,
+        10,
+      );
     }
-  
+
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       {
         $set: {
-          personalDetails: updateData?.personalDetails || existingUser?.personalDetails,
-          jobSeekerDetails: updateData?.jobSeekerDetails || existingUser?.jobSeekerDetails,
-          employerDetails: updateData?.employerDetails || existingUser?.employerDetails,
-          activityDetails: updateData?.activityDetails || existingUser?.activityDetails,
-        }
+          personalDetails:
+            updateData?.personalDetails || existingUser?.personalDetails,
+          jobSeekerDetails:
+            updateData?.jobSeekerDetails || existingUser?.jobSeekerDetails,
+          employerDetails:
+            updateData?.employerDetails || existingUser?.employerDetails,
+          activityDetails:
+            updateData?.activityDetails || existingUser?.activityDetails,
+        },
       },
-      { new: true } 
+      { new: true },
     );
-  
+
     if (!updatedUser) {
-      throwError(httpStatus.INTERNAL_SERVER_ERROR, USER_MESSAGES.USER_PROFILE_UPDATE_FAILED);  
+      throwError(
+        httpStatus.INTERNAL_SERVER_ERROR,
+        USER_MESSAGES.USER_PROFILE_UPDATE_FAILED,
+      );
     }
-  
+
     return updatedUser;
   },
-   updateUserProfilePicture : async (userId: any, profilePictureUrl: string) => {
+  updateUserProfilePicture: async (userId: any, profilePictureUrl: string) => {
     return await User.findByIdAndUpdate(
       userId,
       { 'personalDetails.profilePicture': profilePictureUrl },
-      { new: true } 
-    )},
-    updateResume: async (userId: any, resumeUrl: string, isVerified?: boolean, isPublic?: boolean) => {
-      const user = await User.findById(userId);
-      const existingResume = user?.jobSeekerDetails?.professionalDetails?.resume ;
-      return await User.findByIdAndUpdate(
-        userId,
-        {
-          'jobSeekerDetails.professionalDetails.resume': {
-            url: resumeUrl,
-            isVerified: isVerified !== undefined ? isVerified : existingResume?.isVerified,
-            isPublic: isPublic !== undefined ? isPublic : existingResume?.isPublic,
-          },
-        }, { new: true } 
-      )
-    },
-    deleteUserProfile: async (userId: string) => {
-      return await User.findByIdAndUpdate(userId, { isDeleted: true }, { new: true });
-    },
+      { new: true },
+    );
+  },
+  updateResume: async (
+    userId: any,
+    resumeUrl: string,
+    isVerified?: boolean,
+    isPublic?: boolean,
+  ) => {
+    const user = await User.findById(userId);
+    const existingResume = user?.jobSeekerDetails?.professionalDetails?.resume;
+    return await User.findByIdAndUpdate(
+      userId,
+      {
+        'jobSeekerDetails.professionalDetails.resume': {
+          url: resumeUrl,
+          isVerified:
+            isVerified !== undefined ? isVerified : existingResume?.isVerified,
+          isPublic:
+            isPublic !== undefined ? isPublic : existingResume?.isPublic,
+        },
+      },
+      { new: true },
+    );
+  },
+  deleteUserProfile: async (userId: string) => {
+    return await User.findByIdAndUpdate(
+      userId,
+      { isDeleted: true },
+      { new: true },
+    );
+  },
 };

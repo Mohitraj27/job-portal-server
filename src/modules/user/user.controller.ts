@@ -14,6 +14,7 @@ export const userController = {
   ): Promise<void> => {
     try {
       const {
+        role,
         firstName,
         lastName,
         email,
@@ -28,6 +29,7 @@ export const userController = {
         activityDetails,
       } = req.body;
       const userData = {
+        role,
         personalDetails: {
           firstName,
           lastName,

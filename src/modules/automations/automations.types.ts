@@ -14,6 +14,6 @@ export enum AutomationStatus {
 export interface IAutomation extends Document {
   title: { type: StringConstructor; required: true };
   description: { type: StringConstructor; required: true };
-  includedWith: { type: PricingType; required: true };
+  includedWith: { type: PricingType;  };
   status: { type: AutomationStatus; required: true };
 }

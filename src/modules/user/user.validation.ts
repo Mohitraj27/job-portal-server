@@ -1,12 +1,21 @@
 import { validateSchema } from '@middlewares/validation.middleware';
 import { z } from 'zod';
-import { AccountStatus, ApplicationStatus, EmploymentType, Gender, WorkType } from './user.types';
+import {
+  AccountStatus,
+  ApplicationStatus,
+  EmploymentType,
+  Gender,
+  Role,
+  WorkType,
+} from './user.types';
 
 const userSchema = z.object({
-  phoneNumber: z.object({
-    countryCode: z.string().optional(),
-    number: z.string().nonempty('Phone number is required'),
-  }).optional(),
+  phoneNumber: z
+    .object({
+      countryCode: z.string().optional(),
+      number: z.string().nonempty('Phone number is required'),
+    })
+    .optional(),
   firstName: z
     .string()
     .min(3, 'First name must be at least 3 characters')
@@ -17,7 +26,10 @@ const userSchema = z.object({
     .max(30, 'Last name must be less than 30 characters')
     .optional(),
   email: z.string().email('Invalid email format'),
-  dateOfBirth: z.string().transform((val) => new Date(val)).optional(),
+  dateOfBirth: z
+    .string()
+    .transform((val) => new Date(val))
+    .optional(),
 });
 
 const loginSchema = z.object({
@@ -49,6 +61,9 @@ const changePasswordSchema = z.object({
 });
 const updateUserSchema = z.object({
   id: z.string().nonempty('User id is required'),
+  role: z.nativeEnum(Role, {
+    errorMap: () => ({ message: 'Invalid Role Value' }),
+  }),
   firstName: z
     .string()
     .min(3, 'First name must be at least 3 characters')
@@ -71,32 +86,38 @@ const updateUserSchema = z.object({
     .min(8, 'Password must be at least 8 characters')
     .max(15, 'Password must be no more than 15 characters')
     .optional(),
-  languages:z.string().optional(),
+  languages: z.string().optional(),
   profilePicture: z.string().optional(),
   dateOfBirth: z.string().optional(),
-  gender: z.nativeEnum(Gender, {
+  gender: z
+    .nativeEnum(Gender, {
       errorMap: () => ({ message: 'Invalid Gender Value' }),
-    }).optional(),
+    })
+    .optional(),
 
-  education: z.array(
-    z.object({
-      qualification: z.string().optional(),
-      specialization: z.string().optional(),
-      institutionName: z.string().optional(),
-      yearOfGraduation: z
-        .number()
-        .min(1900, 'Year of graduation must be a valid year')
+  education: z
+    .array(
+      z
+        .object({
+          qualification: z.string().optional(),
+          specialization: z.string().optional(),
+          institutionName: z.string().optional(),
+          yearOfGraduation: z
+            .number()
+            .min(1900, 'Year of graduation must be a valid year')
+            .optional(),
+          certifications: z
+            .array(
+              z.object({
+                name: z.string().optional(),
+                date: z.string().optional(),
+              }),
+            )
+            .optional(),
+        })
         .optional(),
-      certifications: z
-        .array(
-          z.object({
-            name: z.string().optional(),
-            date: z.string().optional(),
-          }),
-        )
-        .optional(),
-    }).optional(),
-  ).optional(),
+    )
+    .optional(),
 
   currentJobTitle: z.string().optional(),
   currentEmployer: z.string().optional(),
@@ -188,8 +209,7 @@ const resumeUploadSchema = z.object({
     }
     return { valid: true };
   }),
-})
-
+});
 
 export const validateUserMiddleware = validateSchema(userSchema, 'body');
 export const validateLoginMiddleware = validateSchema(loginSchema, 'body');
@@ -208,7 +228,7 @@ export const validateChangePasswordMiddleware = validateSchema(
 export const validateUpdateUserMiddleware = validateSchema(
   updateUserSchema,
   'body',
-)
+);
 export const validateProfilePictureMiddleware = validateSchema(
   profilePictureSchema,
   'query',

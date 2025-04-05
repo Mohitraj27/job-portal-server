@@ -119,20 +119,44 @@ const userSchema: Schema = new Schema({
       },
     ],
   },
-  // employerDetails: {
-  //   companyName: { type: String },
-  //   companyLogo: { type: String },
-  //   companyWebsite: { type: String },
-  //   companySize: { type: Number },
-  //   companyIndustry: { type: String },
-  //   companyDescription: { type: String },
-  //   jobPostings: [
-  //     {
-  //       jobId: { type: Schema.Types.ObjectId, ref: 'Job' },
-  //       postingDate: { type: Date, default: Date.now },
-  //     },
-  //   ],
-  // },
+  employerDetails: {
+    companyName: { type: String },
+    email: { type: String },
+    phoneNumber: {
+      countryCode: { type: String },
+      number: { type: String },
+    },
+    website: { type: String },
+    logoUrl: { type: String },
+    establishedYear: { type: Date },
+    companySize: { type: String },
+    industry: { type: String },
+    allowInSearch: { type: Boolean, default: true },
+    companyDescription: { type: String },
+    benefitsAndPerks: [
+      { title: { type: String }, description: { type: String } },
+    ],
+    socialLinks: {
+      linkedIn: { type: String },
+      facebook: { type: String },
+      twitter: { type: String },
+      instagram: { type: String },
+    },
+    contactInfo: {
+      country: { type: String },
+      state: { type: String },
+      city: { type: String },
+      completeAddress: { type: String },
+    }
+
+    // jobPostings: [
+
+    //   {
+    //     jobId: { type: Schema.Types.ObjectId, ref: 'Job' },
+    //     postingDate: { type: Date, default: Date.now },
+    //   },
+    // ],
+  },
   activityDetails: {
     passwordResetToken: { type: String },
     passwordResetExpires: { type: Date },
