@@ -42,7 +42,7 @@ export const userService = {
     });
     return newUser.save();
   },
-  loginUser: async (email: string, password: string): Promise<{ data: { user: IUser; token: string } } | undefined> => {
+  loginUser: async (email: string, password: string): Promise<{ user: IUser; token: string } | undefined> => {
     const user = await User.findOne({ 'personalDetails.email': email }).select(
       '+personalDetails.password',
     );
@@ -64,19 +64,13 @@ export const userService = {
         config.JWT_SECRET || 'your_secret_key',
         { expiresIn: '1h' },
       );
-      return {
-        data: {
-          user,
-          token,
-      }
-      };
-     
+      return { user, token };
     } else {
       throwError(
         httpStatus.UNAUTHORIZED,
         USER_MESSAGES.USER_ALREADY_EXISTS,
       );
-      return undefined; // Explicitly return undefined to satisfy all code paths.
+      return undefined; // Ensure all code paths return a value
     }
   },
   forgetPassword: async (email: string): Promise<IUser> => {
