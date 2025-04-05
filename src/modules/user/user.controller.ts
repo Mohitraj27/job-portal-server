@@ -158,53 +158,59 @@ export const userController = {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      if (!req.body || !req.body.id) {
+      const body = req.body;
+
+      if (!body || !body.id) {
         return throwError(
           httpStatus.UNAUTHORIZED,
           USER_MESSAGES.USER_NOT_FOUND_WITH_ID,
         );
       }
-      const userId = req.body?.id;
-      const {
-        personalDetails: {
-          firstName,
-          lastName,
-          email,
-          phoneNumber: { number, countryCode },
-          age,
-          gender,
-          bio,
-          address,
-          profilePicture,
-          languages,
-          dateOfBirth,
-        },
-        jobSeekerDetails,
-        employerDetails,
-        activityDetails,
-      } = req.body;
 
-      const updatedUser = await userService.updateUserProfile(userId, {
-        personalDetails: {
-          firstName,
-          lastName,
-          age,
-          bio,
-          address,
+      const userId = body.id;
+
+      // Safely extract personalDetails
+      const personalDetails = body.personalDetails || {};
+      const phoneNumber = personalDetails.phoneNumber || {};
+
+      const userPayload: any = {};
+
+      // Only include fields if they exist (optional step for cleaner payload)
+      if (body.personalDetails) {
+        userPayload.personalDetails = {
+          firstName: personalDetails.firstName,
+          lastName: personalDetails.lastName,
+          age: personalDetails.age,
+          bio: personalDetails.bio,
+          address: personalDetails.address,
           phoneNumber: {
-            number,
-            countryCode,
+            number: phoneNumber.number,
+            countryCode: phoneNumber.countryCode,
           },
-          languages,
-          profilePicture,
-          gender,
-          email,
-          dateOfBirth,
-        },
-        jobSeekerDetails,
-        employerDetails,
-        activityDetails,
-      });
+          languages: personalDetails.languages,
+          profilePicture: personalDetails.profilePicture,
+          gender: personalDetails.gender,
+          email: personalDetails.email,
+          dateOfBirth: personalDetails.dateOfBirth,
+        };
+      }
+
+      if (body.jobSeekerDetails) {
+        userPayload.jobSeekerDetails = body.jobSeekerDetails;
+      }
+
+      if (body.employerDetails) {
+        userPayload.employerDetails = body.employerDetails;
+      }
+
+      if (body.activityDetails) {
+        userPayload.activityDetails = body.activityDetails;
+      }
+
+      const updatedUser = await userService.updateUserProfile(
+        userId,
+        userPayload,
+      );
 
       res.sendResponse(
         httpStatus.OK,
@@ -309,9 +315,19 @@ export const userController = {
   ): Promise<void> => {
     try {
       const { userId } = req.query;
-      const isVerified = req.query.isVerified === 'true' ? true : req.query.isVerified === 'false' ? false : undefined;
-      const isPublic = req.query.isPublic === 'true' ? true : req.query.isPublic === 'false' ? false : undefined;
-        const resumeFile = req.file as Express.Multer.File;
+      const isVerified =
+        req.query.isVerified === 'true'
+          ? true
+          : req.query.isVerified === 'false'
+            ? false
+            : undefined;
+      const isPublic =
+        req.query.isPublic === 'true'
+          ? true
+          : req.query.isPublic === 'false'
+            ? false
+            : undefined;
+      const resumeFile = req.file as Express.Multer.File;
       if (!resumeFile) {
         return throwError(
           httpStatus.BAD_REQUEST,
@@ -325,7 +341,12 @@ export const userController = {
           USER_MESSAGES.FAILED_TO_UPLOAD_RESUME,
         );
       }
-      const updatedUser = await userService.updateResume(userId, resumeUrl, isVerified, isPublic);
+      const updatedUser = await userService.updateResume(
+        userId,
+        resumeUrl,
+        isVerified,
+        isPublic,
+      );
       if (!updatedUser) {
         return throwError(httpStatus.NOT_FOUND, USER_MESSAGES.USER_NOT_FOUND);
       }
