@@ -81,7 +81,7 @@ export const socketService = (wss: WebSocketServer) => {
               // if (true) {
                 const senderDetails = await User.findOne({ _id: senderId }).select('role personalDetails.firstName personalDetails.lastName');
                 const receiverDetails = await User.findOne({ _id: receiverId }).select('role personalDetails.firstName personalDetails.lastName');
-                const data = client.send(
+                 client.send(
                   JSON.stringify({
                     event: 'message',
                     senderId:senderDetails,
