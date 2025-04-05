@@ -17,7 +17,7 @@ const userSchema: Schema = new Schema({
     required: true,
   },
   personalDetails: {
-    firstName: { type: String, required: true },
+    firstName: { type: String,  },
     lastName: { type: String },
     email: { type: String, required: true, unique: true },
     phoneNumber: {
