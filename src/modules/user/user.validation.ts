@@ -71,6 +71,7 @@ const updateUserSchema = z.object({
     .min(8, 'Password must be at least 8 characters')
     .max(15, 'Password must be no more than 15 characters')
     .optional(),
+  languages:z.string().optional(),
   profilePicture: z.string().optional(),
   dateOfBirth: z.string().optional(),
   gender: z.nativeEnum(Gender, {

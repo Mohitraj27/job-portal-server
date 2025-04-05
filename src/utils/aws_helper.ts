@@ -29,7 +29,7 @@ const s3 = new AWS.S3({
  export const uploadProfilePictureToS3 = (file: Express.Multer.File): Promise<string> => {
   return new Promise((resolve, reject) => {
     const params = {
-      Bucket: process.env.AWS_BUCKET_NAME || 'squadra-media',
+      Bucket: process.env.BUCKET_NAME || 'squadra-media',
       Key: `profile-pictures/${Date.now}-${file.originalname}`, 
       Body: file.buffer,
       ContentType: file.mimetype, 

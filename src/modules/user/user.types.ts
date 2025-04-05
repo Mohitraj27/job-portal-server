@@ -140,6 +140,7 @@ bio?: string;
     countryCode?: string;
     number: string;
   };
+  languages?: string[];
   password?: string;
   profilePicture?: string;
   dateOfBirth?: Date;

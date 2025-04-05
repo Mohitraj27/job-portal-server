@@ -174,7 +174,7 @@ export const userController = {
           bio,
           address,
           profilePicture,
-
+          languages,
           dateOfBirth,
         },
         jobSeekerDetails,
@@ -193,6 +193,7 @@ export const userController = {
             number,
             countryCode,
           },
+          languages,
           profilePicture,
           gender,
           email,
