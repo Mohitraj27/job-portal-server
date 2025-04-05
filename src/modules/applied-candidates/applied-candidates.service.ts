@@ -317,5 +317,8 @@ export const appliedCandidatesService = {
     application.updatedAt = new Date();
     
     return await application.save();
-  }
+  },
+  async getShortlistedCandidatesdata(jobId: string) {
+    return await appliedCandidatesModel.find({ jobId, isShortlisted: true });
+  },
 };

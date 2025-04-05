@@ -64,6 +64,7 @@ appliedCandidatesRouter
   .route('/shortlisted-count/:jobId')
   .get(appliedCandidatesController.getShortlistedCount);
 
+appliedCandidatesRouter.route('/shortlisted-candidates-data/:jobId').get(appliedCandidatesController.getShortlistedCandidates);
 // Add bookmark to application
 appliedCandidatesRouter
   .route('/bookmark-applied-candidate')
