@@ -1,4 +1,5 @@
 import MessageModel from '@modules/messages/messages.model';
+import User from '@modules/user/user.model';
 import WebSocket, { Server as WebSocketServer } from 'ws';
 
 interface JoinUserEvent {
@@ -73,26 +74,29 @@ export const socketService = (wss: WebSocketServer) => {
           }
 
           // Send message to receiver if they are connected
-          wss.clients.forEach((client: WebSocket) => {
-            if (client.readyState === WebSocket.OPEN) {
-              const userId = (client as any).userId; // Store userId on WebSocket client instance
-              if (userId === receiverId) {
-                client.send(
+          wss.clients.forEach(async (client: WebSocket) => {
+            if (true) {
+              const userId = (client as any)?.userId; // Store userId on WebSocket client instance
+              console.log('this is type ',typeof userId);
+              // if (true) {
+                const senderDetails = await User.findOne({ _id: senderId }).select('role personalDetails.firstName personalDetails.lastName');
+                const receiverDetails = await User.findOne({ _id: receiverId }).select('role personalDetails.firstName personalDetails.lastName');
+                const data = client.send(
                   JSON.stringify({
                     event: 'message',
-                    senderId,
-                    receiverId,
+                    senderId:senderDetails,
+                    receiverId: receiverDetails,
                     content,
                   }),
                 );
-              }
+              // }
             }
           });
 
           // Also send back to sender
-          ws.send(
-            JSON.stringify({ event: 'message', senderId, receiverId, content }),
-          );
+          // ws.send(
+          //   JSON.stringify({ event: 'message', senderId, receiverId, content }),
+          // );
           return;
         }
 
