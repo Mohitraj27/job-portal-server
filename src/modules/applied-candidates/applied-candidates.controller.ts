@@ -133,5 +133,13 @@ export const appliedCandidatesController = {
     } catch (error) {
       next(error);
     }
-  }
+  },
+  async getShortlistedCandidates(req: Request, res: Response, next: NextFunction) {
+    try {
+      const applications = await appliedCandidatesService.getShortlistedCandidatesdata(req.params.jobId);
+      res.sendResponse(httpStatus.OK, applications, APPLIED_CANDIDATES_MESSAGES.APPLICATIONS_FETCHED);
+    } catch (error) {
+      next(error);
+    }
+  },
 };
