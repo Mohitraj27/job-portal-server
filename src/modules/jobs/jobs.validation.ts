@@ -127,7 +127,7 @@ const updateJobSchema = z.object({
       .date()
       .default(() => new Date())
       .optional(),
-    validTill: z.date().optional(),
+    validTill: z.string(),
     remote: z.boolean().default(false).optional(),
     benefits: z.array(z.string()).default([]).optional(),
     applicationLink: z.string().url().optional(),
