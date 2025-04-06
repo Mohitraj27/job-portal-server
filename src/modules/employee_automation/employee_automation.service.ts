@@ -13,7 +13,7 @@ export const employee_automationService = {
     if (employeeId) filterQuery.employeeId = employeeId;
     if (automationId) filterQuery.automationId = automationId;
     if (status) filterQuery.status = status;
-    return await EmployeeAutomation.find(filterQuery);
+    return await EmployeeAutomation.find(filterQuery).populate('automationId', 'title description includedWith status'); 
   },
 
   async getSingleEmployee_automation(id: string) {
