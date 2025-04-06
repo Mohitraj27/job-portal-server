@@ -2,6 +2,22 @@ import mongoose from "mongoose";
 import TalentScout from "./talent-scout.model";
 import jobsModel from "@modules/jobs/jobs.model";
 import usersModel from "@modules/user/user.model";
+const mapExperienceLevel = (experienceLevel: string) => {
+    switch (experienceLevel) {
+      case 'Entry Level':
+        return { $lte: 2 };
+      case 'Mid Level':
+        return { $gt: 2, $lte: 5 };
+      case 'Senior Level':
+        return { $gt: 5, $lte: 10 };
+      case 'Director':
+        return { $gt: 10, $lte: 15 };
+      case 'Executive':
+        return { $gt: 15 };
+      default:
+        return {};
+    }
+  }
 export const talentScoutService = {
     getTalentScoutDetails: async (jobId: string) => { 
         const jobIdObject = new mongoose.Types.ObjectId(jobId);
@@ -101,5 +117,81 @@ export const talentScoutService = {
         //         });
         //     }
         // }
-    }
+    },
+    getAdvanceTalentScoutDetails: async (queryParams: any) => {
+        const {
+          keywords,         // For skills, title, company semantic search
+          location,         // For preferred location
+          experienceLevel,  // Enum: Entry Level, Mid Level, etc.
+          industryType,
+          workType,
+          expectedSalaryMin,
+          expectedSalaryMax,
+          Availability, // match with notice period
+        } = queryParams;
+    
+        const query: any = {
+          role: 'JOBSEEKER',
+          isDeleted: false
+        };
+    
+        // 🔍 Semantic Search (basic regex search for skills, title, companyName)
+        if (keywords) {
+          const regex = new RegExp(keywords, 'i');
+          query.$or = [
+            { 'jobSeekerDetails.professionalDetails.skills': regex },
+            { 'jobSeekerDetails.professionalDetails.currentJobTitle': regex },
+            { 'employerDetails.companyName': regex }
+          ];
+        }
+    
+        // 📍 Location Filter
+        if (location) {
+          const locationRegex = new RegExp(location, 'i');
+          query['jobSeekerDetails.jobPreferences.preferredLocations'] = locationRegex;
+        }
+    
+        // 💼 Experience Level Mapping
+        if (experienceLevel) {
+          query['jobSeekerDetails.professionalDetails.totalExperience'] = mapExperienceLevel(experienceLevel);
+        }
+          // 🏢 Industry type filter (semantic match inside preferredIndustries array)
+        if (industryType) {
+            const industryRegex = new RegExp(industryType, 'i');
+            query['jobSeekerDetails.jobPreferences.preferredIndustries'] = industryRegex;
+        }
+
+        // 🏡 Work Type filter (semantic match)
+        if (workType) {
+            const workTypeRegex = new RegExp(workType, 'i');
+            query['jobSeekerDetails.professionalDetails.employmentType'] = workTypeRegex;
+        }
+
+        // 💰 Salary range filter (expected CTC)
+        if (expectedSalaryMin || expectedSalaryMax) {
+            query['jobSeekerDetails.professionalDetails.expectedCTC'] = {};
+            if (expectedSalaryMin) {
+            query['jobSeekerDetails.professionalDetails.expectedCTC'].$gte = Number(expectedSalaryMin);
+            }
+            if (expectedSalaryMax) {
+            query['jobSeekerDetails.professionalDetails.expectedCTC'].$lte = Number(expectedSalaryMax);
+            }
+        }
+        if (Availability) {
+            if (Availability.toLowerCase() === 'immediate') {
+              // Match immediate joiners (notice period 0)
+              query['jobSeekerDetails.professionalDetails.noticePeriod'] = 0;
+            } else {
+              // Match candidates with notice period less than or equal to provided value
+              query['jobSeekerDetails.professionalDetails.noticePeriod'] = {
+                $lte: Number(Availability)
+              };
+            }
+          }
+          
+        // 👥 Fetch matching candidates
+        const candidates = await usersModel.find(query).lean();
+    
+        return candidates;
+      }
 };

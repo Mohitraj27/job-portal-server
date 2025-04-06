@@ -1,3 +1,3 @@
 export enum TALENT_SCOUT_MESSAGES {
-    TALENT_SCOUT_FETCHED_SUCCESSFULLY = 'Fetched Talent Scout Details Successfully',
+    TALENT_SCOUT_FETCHED_SUCCESSFULLY = 'Talent Scout Details Fetched Successfully',
 } 

@@ -107,7 +107,7 @@ const updateUserSchema = z.object({
   skills: z.array(z.string()).optional(),
   resume: z.string().optional(),
   keyAchievements: z.string().optional(),
-  noticePeriod: z.string().optional(),
+  noticePeriod: z.number().optional(),
   currentCTC: z
     .number()
     .min(0, 'Current CTC must be a positive number')

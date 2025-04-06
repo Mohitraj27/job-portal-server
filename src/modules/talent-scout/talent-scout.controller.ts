@@ -16,5 +16,18 @@ export const talentScoutController = {
       next(error);
     }
   },
+  getAdvanceTalentScoutDetails: async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const queryParams = req.query; // All filters passed from query
+      const candidates = await talentScoutService.getAdvanceTalentScoutDetails(queryParams);
+      res.sendResponse(httpStatus.OK, candidates, TALENT_SCOUT_MESSAGES.TALENT_SCOUT_FETCHED_SUCCESSFULLY);
+    } catch (error) {
+      next(error);
+    }
+  }
   
 };
