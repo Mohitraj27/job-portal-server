@@ -319,6 +319,41 @@ export const appliedCandidatesService = {
     return await application.save();
   },
   async getShortlistedCandidatesdata(jobId: string) {
-    return await appliedCandidatesModel.find({ jobId, isShortlisted: true });
+    const data = await appliedCandidatesModel.find({ jobId, isShortlisted: true })
+      .populate({
+        path: 'candidateId',
+        select: 'role personalDetails.firstName personalDetails.lastName personalDetails.email personalDetails.profilePicture jobSeekerDetails.professionalDetails',
+      })
+      .populate({
+        path: 'jobId',
+        select: 'title description location skills education experience company numberOfOpenings createdAt',
+      });
+  
+    return data.map(application => {
+      const candidate = application.candidateId as any;
+      const job = application.jobId as any;
+  
+      return {
+        _id: application._id,
+        isBookmarked: application.isBookmarked,
+        isDeleted: application.$isDeleted,
+        status: application.status,
+        isShortlisted: application.isShortlisted,
+        coverLetter: application.coverLetter,
+        appliedDate: application.appliedDate,
+        createdAt: application.createdAt,
+        updatedAt: application.updatedAt,
+        shortlistedDate: application.shortlistedDate,
+        jobId: job,
+        candidateId: {
+          _id: candidate._id,
+          firstName: candidate?.personalDetails?.firstName,
+          lastName: candidate?.personalDetails?.lastName,
+          email: candidate?.personalDetails?.email,
+          phone: candidate?.personalDetails?.phone,
+          professionalDetails: candidate.jobSeekerDetails?.professionalDetails || {}
+        }
+      };
+    });
   },
 };
