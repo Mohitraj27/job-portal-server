@@ -7,7 +7,7 @@ import employeeAutomationRouter from '@modules/employee_automation/employee_auto
 import locationRouter from '@modules/location/location.route';
 import messagesRouter from '@modules/messages/messages.routes';
 import employerRouter from '@modules/employer/employer.route';
-
+import talentScoutRouter from '@modules/talent-scout/talent-scout.route';
 const router = Router();
 
 router.use('/users', userRouter);
@@ -18,4 +18,5 @@ router.use('/employee-automation', employeeAutomationRouter);
 router.use('/locations',locationRouter);
 router.use('/employer', employerRouter);
 router.use('/messages', messagesRouter); 
+router.use('/talent-scout',talentScoutRouter);
 export default router;
