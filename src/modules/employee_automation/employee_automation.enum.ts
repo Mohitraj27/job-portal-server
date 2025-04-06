@@ -5,5 +5,6 @@ export const EMPLOYEE_AUTOMATION_MESSAGES = {
   DELETED: 'Employee_automation deleted successfully.',
   FETCHED: 'Employee_automation fetched successfully.',
   NOT_FOUND: 'Employee_automation not found.',
+  ALREADY_EXISTS: 'Automation already exists.',
 };
   

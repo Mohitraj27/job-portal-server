@@ -1,9 +1,24 @@
 
+import { throwError } from '@utils/throwError';
 import { EmployeeAutomation } from './employee_automation.model';
 import { IAutomationEmployee } from './employee_automation.types';
+import httpStatus from '@utils/httpStatus';
+import { EMPLOYEE_AUTOMATION_MESSAGES } from './employee_automation.enum';
 
 export const employee_automationService = {
   async createEmployee_automation(data: IAutomationEmployee) {
+    const existingRecord = await EmployeeAutomation.findOne({ 
+      employeeId: data.employeeId, 
+      automationId: data.automationId 
+    });
+
+    if (existingRecord) {
+        return throwError(
+          httpStatus.CONFLICT,
+          EMPLOYEE_AUTOMATION_MESSAGES.ALREADY_EXISTS,
+        );
+    }
+
     return await EmployeeAutomation.create(data);
   },
 
