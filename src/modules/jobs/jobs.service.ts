@@ -3,10 +3,17 @@ import { JOB_MESSAGES } from "./jobs.enum";
 import jobsModel from "./jobs.model";
 import { IJob, JobQuery } from "./jobs.types";
 import { throwError } from "@utils/throwError";
+import TalentScout from "@modules/talent-scout/talent-scout.model"
 
 export const jobService = {
-  async createJob(data:IJob) {
-    return await jobsModel.create(data);
+  async createJob(data: IJob) {
+    const jobCreated = await jobsModel.create(data);
+      await TalentScout.create({
+        jobId: jobCreated._id,
+        matchCount: 0,
+        isDeleted: false
+      });
+    return jobCreated;
   },
 
 async getAllJobs(query:JobQuery = {}) {
