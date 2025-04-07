@@ -63,7 +63,7 @@ interface ProfessionalDetails {
   skills: string[];
   resume: Resume;
   keyAchievements: string;
-  noticePeriod: string;
+  noticePeriod: number;
   currentCTC?: number;
   expectedCTC: number;
   employmentType: EmploymentType;

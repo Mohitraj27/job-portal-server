@@ -91,7 +91,7 @@ const userSchema: Schema = new Schema({
         },
       },
       keyAchievements: { type: String },
-      noticePeriod: { type: String },
+      noticePeriod: { type: Number },
       currentCTC: { type: Number },
       expectedCTC: { type: Number },
       employmentType: {

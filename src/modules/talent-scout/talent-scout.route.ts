@@ -6,5 +6,5 @@ import { validateTalentScoutMiddleware } from './talent-scout.validation';
 const talentScoutRouter = Router();
 talentScoutRouter.use(responseMiddleware);
 talentScoutRouter.get('/talent-scout-details',validateTalentScoutMiddleware,  talentScoutController.getTalentScoutDetails);
-
+talentScoutRouter.get('/advance-talent-scout-details', talentScoutController.getAdvanceTalentScoutDetails);
 export default talentScoutRouter;
