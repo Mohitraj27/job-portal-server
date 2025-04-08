@@ -25,4 +25,8 @@ jobsRouter
   .route('/delete-job/:id')
   .delete(validateDeleteJobMiddleware, jobController.deleteJob);
 
+  jobsRouter
+  .route('/talent-scout-jobs/:id')
+  .get(jobController.getTalentScoutJobs);  
+
 export default jobsRouter;
