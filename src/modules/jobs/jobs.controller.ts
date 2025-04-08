@@ -82,4 +82,14 @@ export const jobController = {
       next(error);
     }
   },
+
+  async getTalentScoutJobs(req: Request, res: Response, next: NextFunction) {
+    try {
+      const {userId} = req.params
+      const jobs = await jobService.getTalentScoutJobs(userId);
+      res.sendResponse(httpStatus.OK, jobs, JOB_MESSAGES.JOBS_FETCHED);
+    } catch (error) {
+      next(error);
+    }
+  },
 };

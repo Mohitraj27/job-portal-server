@@ -150,4 +150,8 @@ const pipeline = [
       { new: true },
     );
   },
+
+  async getTalentScoutJobs(userId: string) {
+    return await jobsModel.find({ createdBy: userId });
+  },
 };
