@@ -271,8 +271,16 @@ export const talentScoutService = {
               $replaceRoot: {
                 newRoot: '$job'
               }
+            },
+            {
+              $project: {
+                title: 1,
+                location: 1,
+                filteredCandidatesCount: 1,
+                employmentType: 1,
+                industry: 1,
             }
-            
+          }
           ]);
           
 
