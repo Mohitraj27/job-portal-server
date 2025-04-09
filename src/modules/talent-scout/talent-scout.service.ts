@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import TalentScout from "./talent-scout.model";
 import jobsModel from "@modules/jobs/jobs.model";
 import usersModel from "@modules/user/user.model";
+// import appliedCandidatesModel from "@modules/applied-candidates/applied-candidates.model";
 const mapExperienceLevel = (experienceLevel: string) => {
     switch (experienceLevel) {
       case 'Entry Level':
@@ -193,5 +194,88 @@ export const talentScoutService = {
         const candidates = await usersModel.find(query).lean();
     
         return candidates;
-      }
+      },
+
+      getTalentScoutJobs:async(userId: string)=>{
+          // return await jobsModel.find({ 'createdBy.userId': userId });
+          const jobs = await jobsModel.aggregate([
+            {
+              $match: {
+                'createdBy.userId': new mongoose.Types.ObjectId(userId)
+              }
+            },
+            {
+              $lookup: {
+                from: 'appliedcandidates',
+                localField: '_id',
+                foreignField: 'jobId',
+                as: 'appliedCandidates'
+              }
+            },
+            {
+              $unwind: {
+                path: '$appliedCandidates',
+                preserveNullAndEmptyArrays: false
+              }
+            },
+            {
+              $lookup: {
+                from: 'users',
+                localField: 'appliedCandidates.candidateId',
+                foreignField: '_id',
+                as: 'appliedCandidates.userDetails'
+              }
+            },
+            {
+              $unwind: {
+                path: '$appliedCandidates.userDetails',
+                preserveNullAndEmptyArrays: false
+              }
+            },
+            {
+              $match: {
+                $expr: {
+                  $gt: [
+                    {
+                      $size: {
+                        $setIntersection: [
+                          '$skills',
+                          {
+                            $ifNull: [
+                              '$appliedCandidates.userDetails.jobSeekerDetails.professionalDetails.skills',
+                              []
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    0
+                  ]
+                }
+              }
+            },
+            {
+              $group: {
+                _id: '$_id',
+                job: { $first: '$$ROOT' },
+                appliedCandidates: { $push: '$appliedCandidates' }
+              }
+            },
+            {
+              $addFields: {
+                'job.appliedCandidates': '$appliedCandidates',
+                'job.filteredCandidatesCount': { $size: '$appliedCandidates' }
+              }
+            },
+            {
+              $replaceRoot: {
+                newRoot: '$job'
+              }
+            }
+            
+          ]);
+          
+
+          return jobs
+        },
 };

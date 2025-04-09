@@ -28,6 +28,15 @@ export const talentScoutController = {
     } catch (error) {
       next(error);
     }
-  }
-  
+  },
+  async getTalentScoutJobs(req: Request, res: Response, next: NextFunction) {
+      try {
+        const {id} = req.params
+        console.log("userId",id)
+        const jobs = await talentScoutService.getTalentScoutJobs(id);
+        res.sendResponse(httpStatus.OK, jobs, TALENT_SCOUT_MESSAGES.JOBS_FETCHED);
+      } catch (error) {
+        next(error);
+      }
+    },
 };
