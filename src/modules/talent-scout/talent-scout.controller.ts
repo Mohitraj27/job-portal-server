@@ -9,7 +9,7 @@ export const talentScoutController = {
     next: NextFunction,
   ): Promise<void> => {
     try {
-        const  { jobId }  = req.body;
+        const  { jobId }  = req.params;
         const dataforTalentScout = await talentScoutService.getTalentScoutDetails(jobId as string);
         res.sendResponse(httpStatus.OK, dataforTalentScout, TALENT_SCOUT_MESSAGES.TALENT_SCOUT_FETCHED_SUCCESSFULLY);
     } catch (error) {

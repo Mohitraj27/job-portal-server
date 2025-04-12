@@ -279,6 +279,7 @@ export const talentScoutService = {
                 filteredCandidatesCount: 1,
                 employmentType: 1,
                 industry: 1,
+                appliedCandidates:1,
             }
           }
           ]);

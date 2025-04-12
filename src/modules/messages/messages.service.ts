@@ -2,7 +2,12 @@ import MessageModel from './messages.model';
 import User from '@modules/user/user.model';
 export const  MessagesService = {
     async getMessagesByRoomId(joinedRoomId: string) {
-      const messages = await MessageModel.find({ joinedRoomId: joinedRoomId }).sort({ createdAt: 1 }).lean();
+      const messages = await MessageModel.find({
+        $or: [
+          { joinedRoomId: joinedRoomId },
+          { receiverId: joinedRoomId }
+        ]
+      }).sort({ createdAt: 1 }).lean();
       const userIds = new Set();
       messages.forEach(message => {
         userIds.add(message.senderId.toString());
