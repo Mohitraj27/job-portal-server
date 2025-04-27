@@ -1,6 +1,6 @@
 import mongoose, { Document } from 'mongoose';
 export interface dashboard extends Document {
-    userId: mongoose.Types.ObjectId;
+    userId: string;
     totalJobPosting: number;
     totalActiveApplicants: number;
 }
