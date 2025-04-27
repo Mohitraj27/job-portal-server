@@ -1,11 +1,10 @@
 
-import { dashboard } from './dashboard.types';
 import JobsModel from '@modules/jobs/jobs.model';
 import {JobStatus} from '@modules/jobs/jobs.types';
 import AppliedCandidatesModel from '@modules/applied-candidates/applied-candidates.model';
 import {ApplicationStatus} from '@modules/applied-candidates/applied-candidates.types';
 export const dashboardService = {
-  async countJobPostings(data: dashboard) {
+  async countJobPostings(data: any) {
     const { userId } = data;
     const count = await JobsModel.countDocuments({
       'createdBy.userId': userId,
@@ -14,7 +13,7 @@ export const dashboardService = {
     });
     return count;
   },
-  async countActiveApplicants(data: dashboard) {
+  async countActiveApplicants(data: any) {
     const { userId } = data;
 
     const jobs = await JobsModel.find({
@@ -50,7 +49,7 @@ export const dashboardService = {
 
     return result.length > 0 ? result[0].totalActiveApplicants : 0;
   },
-  async listJobPostings(data: dashboard) {
+  async listJobPostings(data: any) {
     const { userId } = data;
 
     // Find jobs created by the user
@@ -58,7 +57,6 @@ export const dashboardService = {
       'createdBy.userId': userId,
     }).select('title industry applicationsCount location remote status validTill');
 
-    // Map and transform the data to include "daysLeft"
     const jobList = jobs.map(job => {
       const now = new Date();
       const validTillDate = new Date(job.validTill);
@@ -78,7 +76,77 @@ export const dashboardService = {
         daysLeft: daysLeft,
       };
     });
-
     return jobList;
   },
-};
+
+  async totalApplicants(data: any) {
+    const { userId } = data;
+
+    const jobs = await JobsModel.find({
+      'createdBy.userId': userId,
+      status: JobStatus.ACTIVE,
+      validTill: { $gt: new Date() },
+    }, { _id: 1 });
+
+    const jobIds = jobs.map(job => job._id);
+
+    if (jobIds.length === 0) {
+      return 0;
+    }
+    const result = await AppliedCandidatesModel.aggregate([
+      {
+        $match: {
+          jobId: { $in: jobIds },
+          isDeleted: false,
+        },
+      },
+      {
+        $count: 'totalActiveApplicants'
+      }
+    ]);
+
+    return result.length > 0 ? result[0].totalActiveApplicants : 0;
+  },
+  async totalshortlistedcandidates(data: any) {
+      const { userId } = data;
+  
+      const jobs = await JobsModel.find({
+        'createdBy.userId': userId,
+        status: JobStatus.ACTIVE,
+        validTill: { $gte: new Date() }, 
+      }).select('_id');
+  
+      const jobIds = jobs.map(job => job._id);
+  
+      if (jobIds.length === 0) {
+        return 0; 
+      }
+
+      const totalShortlistCount = await AppliedCandidatesModel.countDocuments({
+        jobId: { $in: jobIds },
+        isDeleted: false,
+        isShortlisted: true,
+      });
+
+      return totalShortlistCount;
+  },
+  async totalViewsCountforJob(data: any) {
+    const { userId } = data;
+    const totalViewsCount = await JobsModel.aggregate([
+      {
+        $match: {
+          'createdBy.userId': userId,
+          status: JobStatus.ACTIVE,
+          validTill: { $gte: new Date() },
+        }
+      },
+      // {
+      //   $group: {
+      //     _id: null,
+      //     totalViews: { $sum: '$views' }, 
+      //   },
+      // },
+    ]);
+    return totalViewsCount;
+  }
+}
