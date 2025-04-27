@@ -50,5 +50,13 @@ export const dashboardController = {
     }catch(error){
       next(error);
     }
+  },
+  async applicantTrends(req:Request , res:Response, next:NextFunction){
+    try{
+      const applicantTrends = await dashboardService.applicantTrends(req.params as any);
+      res.sendResponse(httpStatus.OK, applicantTrends, DASHBOARD_MESSAGES.APPLICANT_TRENDS_FETCHED);
+    }catch(error){
+      next(error);
+    }
   }
 };
