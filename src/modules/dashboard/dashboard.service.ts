@@ -3,6 +3,7 @@ import JobsModel from '@modules/jobs/jobs.model';
 import {JobStatus} from '@modules/jobs/jobs.types';
 import AppliedCandidatesModel from '@modules/applied-candidates/applied-candidates.model';
 import {ApplicationStatus} from '@modules/applied-candidates/applied-candidates.types';
+import mongoose from 'mongoose';
 export const dashboardService = {
   async countJobPostings(data: any) {
     const { userId } = data;
@@ -52,7 +53,6 @@ export const dashboardService = {
   async listJobPostings(data: any) {
     const { userId } = data;
 
-    // Find jobs created by the user
     const jobs = await JobsModel.find({
       'createdBy.userId': userId,
     }).select('title industry applicationsCount location remote status validTill');
@@ -132,21 +132,22 @@ export const dashboardService = {
   },
   async totalViewsCountforJob(data: any) {
     const { userId } = data;
-    const totalViewsCount = await JobsModel.aggregate([
+    const result = await JobsModel.aggregate([
       {
         $match: {
-          'createdBy.userId': userId,
+          'createdBy.userId': new mongoose.Types.ObjectId(userId), 
           status: JobStatus.ACTIVE,
           validTill: { $gte: new Date() },
-        }
+        },
       },
-      // {
-      //   $group: {
-      //     _id: null,
-      //     totalViews: { $sum: '$views' }, 
-      //   },
-      // },
+      {
+        $group: {
+          _id: null,
+          totalViews: { $sum: { $ifNull: ['$views', 0] } }, 
+        },
+      },
     ]);
-    return totalViewsCount;
+  
+    return result.length > 0 ? result[0].totalViews : 0;
   }
 }
