@@ -6,7 +6,7 @@ export const dashboardController = {
   async countJobPostings(req: Request, res: Response, next: NextFunction) {
     try {
       const application = await dashboardService.countJobPostings(req.params as any);
-      res.sendResponse(httpStatus.CREATED, application, DASHBOARD_MESSAGES.TOTAL_JOB_POSTING_FETCHED);
+      res.sendResponse(httpStatus.OK, application, DASHBOARD_MESSAGES.TOTAL_JOB_POSTING_FETCHED);
     } catch (error) {
       next(error);
     }
@@ -14,7 +14,7 @@ export const dashboardController = {
   async countActiveApplicants(req: Request, res: Response, next: NextFunction) {
     try {
       const applicants = await dashboardService.countActiveApplicants(req.params as any);
-      res.sendResponse(httpStatus.CREATED, applicants, DASHBOARD_MESSAGES.TOTAL_ACTIVE_APPLICANTS_FETCHED);
+      res.sendResponse(httpStatus.OK, applicants, DASHBOARD_MESSAGES.TOTAL_ACTIVE_APPLICANTS_FETCHED);
     } catch (error) {
       next(error);
     }
