@@ -149,5 +149,71 @@ export const dashboardService = {
     ]);
   
     return result.length > 0 ? result[0].totalViews : 0;
+  },
+  async applicantTrends(data: any) {
+    const { userId } = data;
+
+    const pipeline = [
+      {
+        $lookup: {
+          from: 'jobs',
+          localField: 'jobId',
+          foreignField: '_id',
+          as: 'jobDetails',
+        }
+      },
+      { $unwind: '$jobDetails' },
+      {
+        $match: {
+          'jobDetails.createdBy.userId': new mongoose.Types.ObjectId(userId),
+          'jobDetails.status': 'ACTIVE',
+          'jobDetails.validTill': { $gte: new Date() },
+        }
+      },
+      {
+        $project: {
+          appliedDate: 1,
+        }
+      },
+      {
+        $group: {
+          _id: { $dayOfWeek: '$appliedDate' }, 
+          count: { $sum: 1 }
+        }
+      }
+    ];
+  
+    const result = await AppliedCandidatesModel.aggregate(pipeline);
+  
+    const dayMapping = {
+      1: 'Sun',
+      2: 'Mon',
+      3: 'Tue',
+      4: 'Wed',
+      5: 'Thu',
+      6: 'Fri',
+      7: 'Sat',
+    };
+  
+    const finalResult: Record<string, number> = {
+      Mon: 0,
+      Tue: 0,
+      Wed: 0,
+      Thu: 0,
+      Fri: 0,
+      Sat: 0,
+      Sun: 0,
+    };
+  
+    for (const item of result) {
+      const dayNumber = item._id as number; 
+      const day = dayMapping[dayNumber as keyof typeof dayMapping];
+    
+      if (day) {
+        finalResult[day] += item.count;
+      }
+    }
+  
+    return finalResult;
   }
 }
