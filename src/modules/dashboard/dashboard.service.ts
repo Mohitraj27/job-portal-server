@@ -215,5 +215,15 @@ export const dashboardService = {
     }
   
     return finalResult;
+  },
+  async jobExpirycount(data: any){
+    const { userId } = data;
+    const jobExpiryCount = await JobsModel.countDocuments({
+      'createdBy.userId': userId,
+      status: JobStatus.ACTIVE,
+      isDeleted: false,
+      validTill: { $lt: new Date() },
+    });
+    return jobExpiryCount;
   }
 }

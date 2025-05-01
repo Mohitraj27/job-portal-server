@@ -58,5 +58,13 @@ export const dashboardController = {
     }catch(error){
       next(error);
     }
+  },
+  async jobExpirycount(req:Request , res:Response, next:NextFunction){
+    try{
+      const jobExpiryCount = await dashboardService.jobExpirycount(req.params as any);
+      res.sendResponse(httpStatus.OK, jobExpiryCount, DASHBOARD_MESSAGES.JOB_EXPIRY_COUNT_FETCHED);
+    }catch(error){
+      next(error);
+    }
   }
 };
