@@ -66,5 +66,14 @@ export const dashboardController = {
     }catch(error){
       next(error);
     }
+  },
+  async totalbookmarkCount(req:Request , res:Response, next:NextFunction){
+    try{
+      console.log('reached here',req.params);
+      const bookmarkCount = await dashboardService.totalbookmarkCount(req.params as any);
+      res.sendResponse(httpStatus.OK, bookmarkCount, DASHBOARD_MESSAGES.TOTAL_JOBS_BOOKMARK_COUNT_FETCHED);
+    }catch(error){
+      next(error);
+    }
   }
 };
