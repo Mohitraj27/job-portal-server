@@ -9,6 +9,7 @@ import messagesRouter from '@modules/messages/messages.routes';
 import employerRouter from '@modules/employer/employer.route';
 import talentScoutRouter from '@modules/talent-scout/talent-scout.route';
 import dashboardRouter from '@modules/dashboard/dashboard.routes';
+import jobSeekerdashboardRouter from '@modules/job-seeker-dashboard/job-seeker-dashboard.routes';
 const router = Router();
 
 router.use('/users', userRouter);
@@ -21,4 +22,5 @@ router.use('/employer', employerRouter);
 router.use('/messages', messagesRouter); 
 router.use('/talent-scout',talentScoutRouter);
 router.use('/dashboard',dashboardRouter);
+router.use('/job-seeker-dashboard',jobSeekerdashboardRouter);
 export default router;

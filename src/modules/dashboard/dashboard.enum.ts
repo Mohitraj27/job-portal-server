@@ -7,4 +7,5 @@ export const DASHBOARD_MESSAGES = {
     TOTAL_SHORTLISTED_CANDIDATES_FETCHED: 'Total shortlisted candidates fetched successfully',
     TOTAL_VIEWS_COUNT_FETCHED_FOR_JOBS: 'Total views count for Jobs fetched successfully',
     APPLICANT_TRENDS_FETCHED: 'Applicant trends fetched successfully',
+    JOB_EXPIRY_COUNT_FETCHED: 'Job expiry count fetched successfully',
 };

@@ -13,5 +13,5 @@ dashboardRouter.route('/job-performance/total-applicants/:userId').get(dashboard
 dashboardRouter.route('/job-Performance/shortlisted/:userId').get(dashboardController.totalshortlistedcandidates);
 dashboardRouter.route('/job-performance/totalviewsCountforJobs/:userId').get(dashboardController.totalViewsCountforJob);
 dashboardRouter.route('/applicant-trends/:userId').get(dashboardController.applicantTrends);
-
+dashboardRouter.route('/job-expiry/:userId').get(dashboardController.jobExpirycount);
 export default dashboardRouter;
