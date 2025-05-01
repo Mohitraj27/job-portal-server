@@ -225,5 +225,34 @@ export const dashboardService = {
       validTill: { $lt: new Date() },
     });
     return jobExpiryCount;
+  },
+  async totalbookmarkCount(data: any){
+    const { userId } = data;
+    const jobs = await JobsModel.find({
+      'createdBy.userId': userId,
+      status: JobStatus.ACTIVE,
+      validTill: { $gt: new Date() },
+    }, { _id: 1 });
+
+    const jobIds = jobs.map(job => job._id);
+    if (jobIds?.length === 0) return 0;
+  
+    const result = await AppliedCandidatesModel.aggregate([
+      {
+        $match: {
+          jobId: { $in: jobIds },
+          isBookmarked: true,
+          isDeleted: false,
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalCount: { $sum: 1 }
+        }
+      }
+    ]);
+    const totalBookmarkedCount = result[0]?.totalCount ?? 0;
+    return totalBookmarkedCount;
   }
 }
