@@ -8,5 +8,5 @@ jobSeekerdashboardRouter.param('id', validateObjectId);
 jobSeekerdashboardRouter.use(responseMiddleware);
 jobSeekerdashboardRouter.route('/applied-jobscount/:userId').get(jobSeekerController.countAppliedJobs);
 jobSeekerdashboardRouter.route('/shortlisted-jobscount/:userId').get(jobSeekerController.shortlistedJobsCount);
-
+jobSeekerdashboardRouter.route('/applied-jobs-jobseeker/:userId').get(jobSeekerController.appliedJobsforJobSeeker);
 export default jobSeekerdashboardRouter;
