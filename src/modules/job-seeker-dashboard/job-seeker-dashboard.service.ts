@@ -1,7 +1,6 @@
 import User from '@modules/user/user.model';
 import AppliedCandidatesModel from '@modules/applied-candidates/applied-candidates.model';
 import { Role } from '@modules/user/user.types';
-import {ApplicationStatus} from '@modules/applied-candidates/applied-candidates.types';
 export const jobseekerDashboardService = {
   async countAppliedJob(data: any) {
     const { userId } = data;
@@ -11,7 +10,6 @@ export const jobseekerDashboardService = {
     }
     const appliedJobCount = await AppliedCandidatesModel.countDocuments({
       candidateId: userId,
-      status: ApplicationStatus.APPLIED,
       isDeleted: false,
     });
     return appliedJobCount;
@@ -29,5 +27,24 @@ export const jobseekerDashboardService = {
     });
     return shortlistedJobCount;
   },
-  
+  async appliedJobsforJobSeeker(data: any){
+    const { userId } = data;
+    
+  const appliedJobs = await AppliedCandidatesModel.find({
+    candidateId: userId,
+    isDeleted: false,
+  }).populate({ path: 'jobId', select: 'title company'}).lean();
+
+  const result = appliedJobs.map(applied => {
+    const job = applied.jobId as any; 
+    if(!job) return {};
+    return {
+      jobId: job?._id || '',
+      jobTitle: job?.title || '',
+      companyName: job?.company || '',
+      status: applied.status,
+    };
+  });
+  return result;
+  }
 }
