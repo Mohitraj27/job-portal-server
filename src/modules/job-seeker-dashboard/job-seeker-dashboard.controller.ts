@@ -27,4 +27,12 @@ export const jobSeekerController = {
       next(error);
     }
   },
+  async recommendedJobsbasedforJobSeeker(req: Request, res:Response, next:NextFunction){
+    try{
+      const recommendedJobsbasedforJobSeeker = await jobseekerDashboardService.recommendedJobsbasedforJobSeeker(req.params as any);
+      res.sendResponse(httpStatus.OK, recommendedJobsbasedforJobSeeker, JOB_SEEKER_DASHBOARD_MESSAGES.JOB_SEEKER_RECOMMENDED_JOBS_DATA_FETCHED);
+    }catch(error){
+      next(error);
+    }
+  }
 };
