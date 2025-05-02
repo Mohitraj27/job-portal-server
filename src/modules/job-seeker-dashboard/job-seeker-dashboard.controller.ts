@@ -19,4 +19,20 @@ export const jobSeekerController = {
       next(error);
     }
   },
+  async appliedJobsforJobSeeker(req: Request, res: Response, next: NextFunction) {
+    try {
+      const appliedJobsforJobSeeker = await jobseekerDashboardService.appliedJobsforJobSeeker(req.params as any);
+      res.sendResponse(httpStatus.OK, appliedJobsforJobSeeker, JOB_SEEKER_DASHBOARD_MESSAGES.JOB_SEEKER_APPLIED_JOBS_DATA_FETCHED);
+    } catch (error) {
+      next(error);
+    }
+  },
+  async recommendedJobsbasedforJobSeeker(req: Request, res:Response, next:NextFunction){
+    try{
+      const recommendedJobsbasedforJobSeeker = await jobseekerDashboardService.recommendedJobsbasedforJobSeeker(req.params as any);
+      res.sendResponse(httpStatus.OK, recommendedJobsbasedforJobSeeker, JOB_SEEKER_DASHBOARD_MESSAGES.JOB_SEEKER_RECOMMENDED_JOBS_DATA_FETCHED);
+    }catch(error){
+      next(error);
+    }
+  }
 };
