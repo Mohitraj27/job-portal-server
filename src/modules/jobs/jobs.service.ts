@@ -112,12 +112,12 @@ export const jobService = {
           from: 'users',
           localField: 'createdBy.userId',
           foreignField: '_id',
-          as: 'createdBy',
+          as: 'createdByDetails',
         },
       },
       {
         $unwind: {
-          path: '$createdBy',
+          path: '$createdByDetails',
           preserveNullAndEmptyArrays: true,
         },
       },
