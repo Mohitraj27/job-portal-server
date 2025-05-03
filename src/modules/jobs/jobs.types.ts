@@ -260,4 +260,5 @@ export interface JobQuery {
   jobType?: string[]; 
   experienceLevel?: string[]; 
   datePosted?: string; 
+  userId?: string;
 }

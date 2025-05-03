@@ -10,4 +10,5 @@ jobSeekerdashboardRouter.route('/applied-jobscount/:userId').get(jobSeekerContro
 jobSeekerdashboardRouter.route('/shortlisted-jobscount/:userId').get(jobSeekerController.shortlistedJobsCount);
 jobSeekerdashboardRouter.route('/applied-jobs-jobseeker/:userId').get(jobSeekerController.appliedJobsforJobSeeker);
 jobSeekerdashboardRouter.route('/recommended-jobs/:userId').get(jobSeekerController.recommendedJobsbasedforJobSeeker);
+jobSeekerdashboardRouter.route('/job-alerts-count/:userId').get(jobSeekerController.jobAlertsCount);
 export default jobSeekerdashboardRouter;

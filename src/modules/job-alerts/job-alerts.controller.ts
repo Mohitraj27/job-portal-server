@@ -18,5 +18,21 @@ export const jobAlertsController = {
         } catch (error) {
             next(error);
         }
+    },
+    deleteJobAlerts: async(req:Request, res:Response, next:NextFunction) => {
+        try {
+            const jobAlerts = await jobAlertServiceforJobSeeker.deleteJobAlerts(req.params.id);
+            res.sendResponse(httpStatus.OK, jobAlerts, JOB_ALERTS_MESSAGES.JOB_ALERTS_DELETED);
+        } catch (error) {
+            next(error);
+        }
+    },
+    updateJobAlerts: async(req:Request, res:Response, next:NextFunction) => {
+        try {
+            const jobAlerts = await jobAlertServiceforJobSeeker.updateJobAlerts(req.params.id, req.body);
+            res.sendResponse(httpStatus.OK, jobAlerts, JOB_ALERTS_MESSAGES.JOB_ALERTS_UPDATED);
+        } catch (error) {
+            next(error);
+        }
     }
 };
