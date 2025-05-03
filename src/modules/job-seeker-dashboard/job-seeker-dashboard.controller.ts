@@ -34,5 +34,14 @@ export const jobSeekerController = {
     }catch(error){
       next(error);
     }
-  }
+  },
+  
+  async jobAlertsCount(req: Request, res: Response, next: NextFunction) {
+    try {
+      const jobAlertsCount = await jobseekerDashboardService.jobAlertsCount(req.params as any);
+      res.sendResponse(httpStatus.OK, jobAlertsCount, JOB_SEEKER_DASHBOARD_MESSAGES.JOB_ALERTS_COUNT_FETCHED);
+    } catch (error) {
+      next(error);
+    }
+  },
 };

@@ -4,4 +4,5 @@ export const JOB_SEEKER_DASHBOARD_MESSAGES = {
     JOB_SEEKER_SHORTLISTED_APPLICANTS_FETCHED: 'Job seeker shortlisted applicants data fetched successfully',
     SHORTLISTED_JOBS_COUNT_FETCHED: 'Shortlisted jobs count fetched successfully',
     JOB_SEEKER_RECOMMENDED_JOBS_DATA_FETCHED: 'Job seeker recommended jobs data fetched successfully',
+    JOB_ALERTS_COUNT_FETCHED: 'Job alerts count fetched successfully',
 };
