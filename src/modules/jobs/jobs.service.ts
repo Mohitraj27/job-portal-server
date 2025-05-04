@@ -31,12 +31,15 @@ export const jobService = {
 
     const filters = [];
 
-    let salaryObject=null
-    if(salaryRange){
-      salaryObject = JSON.parse(salaryRange);
+    let salaryObject = null;
+    if (salaryRange) {
+      salaryObject =
+        typeof salaryRange === 'string' ? JSON.parse(salaryRange) : null;
     }
-    console.log("educationLevel---------->", educationLevel);
-    let jobsArray=jobType?.split(',').map((item) => item.trim()) || [];
+    console.log('educationLevel---------->', educationLevel);
+    let jobsArray = Array.isArray(jobType)
+      ? jobType.map((item) => item.trim())
+      : [];
 
     if (keywords) {
       filters.push({
@@ -66,15 +69,13 @@ export const jobService = {
       filters.push({ salary: salaryFilter });
     }
 
-
     if (educationLevel) {
       filters.push({ educationLevel: educationLevel });
     }
 
-    if (jobsArray?.length>0) {
+    if (jobsArray?.length > 0) {
       filters.push({ jobType: { $in: jobsArray } });
     }
-
 
     if (experienceLevel) {
       filters.push({ experienceLevel: experienceLevel });
@@ -128,6 +129,49 @@ export const jobService = {
         $unwind: {
           path: '$createdByDetails',
           preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          company: 1,
+          description: 1,
+          location: 1,
+          employmentType: 1,
+          industry: 1,
+          skills: 1,
+          experience: 1,
+          education: 1,
+          languages: 1,
+          salary: 1,
+          numberOfOpenings: 1,
+          postedAt: 1,
+          validTill: 1,
+          benefits: 1,
+          applicationLink: 1,
+          remote: 1,
+          createdBy: 1,
+          status: 1,
+          priority: 1,
+          tags: 1,
+          views: 1,
+          applicationsCount: 1,
+          savedCount: 1,
+          moderationStatus: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          createdByDetails: {
+            _id: 1,
+            companyName: '$createdByDetails.employerDetails.companyName',
+            logoUrl: '$createdByDetails.employerDetails.logoUrl',
+            state: '$createdByDetails.employerDetails.contactInfo.state',
+            city: '$createdByDetails.employerDetails.contactInfo.city',
+            country: '$createdByDetails.employerDetails.contactInfo.country',
+            completeAddress:
+              '$createdByDetails.employerDetails.contactInfo.completeAddress',
+            
+          },
         },
       },
     ];

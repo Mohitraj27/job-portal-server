@@ -255,7 +255,7 @@ export interface JobQuery {
   keywords?: string; 
   location?: { lat: number; lng: number }; 
   radius?: number; 
-  salaryRange?: { min?: number; max?: number }; 
+  salaryRange?: { min?: number | string; max?: number | string }; 
   educationLevel?: string[]; 
   jobType?: string[]; 
   experienceLevel?: string[]; 
