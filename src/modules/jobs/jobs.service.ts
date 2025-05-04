@@ -115,21 +115,7 @@ export const jobService = {
       },
       {
         $sort: { updatedAt: -1 as 1 | -1 },
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'createdBy.userId',
-          foreignField: '_id',
-          as: 'createdByDetails',
-        },
-      },
-      {
-        $unwind: {
-          path: '$createdByDetails',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
+      }
     ];
 
     return await jobsModel.aggregate(pipeline);

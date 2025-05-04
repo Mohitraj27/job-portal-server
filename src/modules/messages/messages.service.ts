@@ -62,6 +62,10 @@ export const  MessagesService = {
     })
       .sort({ createdAt: 1 })
       .lean();
-  }
+  },
+  async MessageCountforJobSeeker(userId: string) {
+    const messageCount = await MessageModel.countDocuments({ receiverId: userId }).catch(() => 0);
+    return messageCount;
+  },
 }
 
