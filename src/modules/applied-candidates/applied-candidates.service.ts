@@ -183,7 +183,14 @@ export const appliedCandidatesService = {
       .sort(sort)
       .skip(skip)
       .limit(limit)
-      .populate('jobId', 'title company status validTill')
+      .populate({
+        path: 'jobId',
+        select: 'title company status validTill',
+        populate: {
+          path: 'createdBy.userId',
+          select: 'employerDetails',
+        },
+      })
       .lean();
 
     return {
