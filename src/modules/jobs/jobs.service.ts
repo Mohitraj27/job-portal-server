@@ -4,6 +4,7 @@ import jobsModel from './jobs.model';
 import { IJob, JobQuery } from './jobs.types';
 import { throwError } from '@utils/throwError';
 import TalentScout from '@modules/talent-scout/talent-scout.model';
+import mongoose from 'mongoose';
 
 export const jobService = {
   async createJob(data: IJob) {
@@ -132,6 +133,31 @@ export const jobService = {
         },
       },
       {
+        $lookup: {
+          from: 'bookmarkjobs',
+          let: { jobId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$userId', new mongoose.Types.ObjectId(userId)] },
+                    { $in: ['$$jobId', '$jobIds'] },
+                  ],
+                },
+              },
+            },
+          ],
+          as: 'bookmarkMatch',
+        },
+      },
+      {
+        $addFields: {
+          bookmarked: { $gt: [{ $size: '$bookmarkMatch' }, 0] },
+        },
+      },
+
+      {
         $project: {
           _id: 1,
           title: 1,
@@ -151,6 +177,7 @@ export const jobService = {
           benefits: 1,
           applicationLink: 1,
           remote: 1,
+          bookmarked: 1,
           createdBy: 1,
           status: 1,
           priority: 1,
@@ -170,7 +197,6 @@ export const jobService = {
             country: '$createdByDetails.employerDetails.contactInfo.country',
             completeAddress:
               '$createdByDetails.employerDetails.contactInfo.completeAddress',
-            
           },
         },
       },

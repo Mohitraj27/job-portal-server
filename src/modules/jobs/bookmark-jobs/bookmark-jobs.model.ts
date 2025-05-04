@@ -7,4 +7,4 @@ const JobBookmarkedSchema: Schema = new Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
-export default mongoose.model('JobsBookamarked', JobBookmarkedSchema);
+export default mongoose.model('BookmarkJobs', JobBookmarkedSchema);
