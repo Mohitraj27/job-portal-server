@@ -180,7 +180,13 @@ export const jobService = {
   },
 
   async getSingleJob(jobId: string) {
-    return await jobsModel.findById(jobId);
+    return await jobsModel.findById(jobId)
+      .populate({
+        path: 'createdBy.userId',
+        select: 'employerDetails.companyName employerDetails.logoUrl employerDetails.contactInfo.state employerDetails.contactInfo.city employerDetails.contactInfo.country employerDetails.contactInfo.completeAddress',
+        model: 'User',
+      })
+      .select('-__v -createdAt -updatedAt');
   },
 
   async updateJob(jobId: string, updateData: Partial<IJob>) {
