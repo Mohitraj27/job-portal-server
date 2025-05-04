@@ -5,6 +5,7 @@ import {
   validateDeleteJobMiddleware,
   validateJobMiddleware,
   validateUpdateJobMiddleware,
+  validateGetSingleJobMiddleware,
 } from './jobs.validation';
 import { validateObjectId } from '@middlewares/validateobjectid.middleware';
 
@@ -17,7 +18,7 @@ jobsRouter
   .route('/create-job')
   .post(validateJobMiddleware, jobController.createJob);
 jobsRouter.route('/get-jobs').get(jobController.getAllJobs);
-jobsRouter.route('/get-job/:id').get(jobController.getSingleJob);
+jobsRouter.route('/get-job').get(validateGetSingleJobMiddleware,jobController.getSingleJob);
 jobsRouter
   .route('/update-job/:id')
   .put(validateUpdateJobMiddleware, jobController.updateJob);
