@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import User from './user.model';
+import User, { UserView } from './user.model';
 import { config } from '@config/env';
 import { AccountStatus, IUser } from './user.types';
 import { throwError } from '@utils/throwError';
@@ -9,6 +9,7 @@ import { USER_MESSAGES } from './user.enum';
 import crypto from 'crypto';
 import { sendEmail } from '@utils/emailService';
 import passwordResetTemplate from '@email_template/forgetPassword';
+import mongoose from 'mongoose';
 export const userService = {
   registerUser: async (userData: Partial<IUser>): Promise<IUser> => {
     const existingUser = await User.findOne({
@@ -42,7 +43,10 @@ export const userService = {
     });
     return newUser.save();
   },
-  loginUser: async (email: string, password: string): Promise<{ user: IUser; token: string } | undefined> => {
+  loginUser: async (
+    email: string,
+    password: string,
+  ): Promise<{ user: IUser; token: string } | undefined> => {
     const user = await User.findOne({ 'personalDetails.email': email }).select(
       '+personalDetails.password',
     );
@@ -66,10 +70,7 @@ export const userService = {
       );
       return { user, token };
     } else {
-      throwError(
-        httpStatus.UNAUTHORIZED,
-        USER_MESSAGES.USER_ALREADY_EXISTS,
-      );
+      throwError(httpStatus.UNAUTHORIZED, USER_MESSAGES.USER_ALREADY_EXISTS);
       return undefined; // Ensure all code paths return a value
     }
   },
@@ -210,5 +211,76 @@ export const userService = {
       { isDeleted: true },
       { new: true },
     );
+  },
+  getUserViews: async (userId: string) => {
+    const now = new Date();
+    const millisIn15Days = 15 * 24 * 60 * 60 * 1000;
+    const ranges = [];
+
+    for (let i = 5; i >= 0; i--) {
+      const start = new Date(now.getTime() - millisIn15Days * (i + 1));
+      const end = new Date(now.getTime() - millisIn15Days * i);
+      const label = `${start.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+      })} - ${new Date(end.getTime() - 1).toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+      })}`;
+      ranges.push({ start, end, label });
+    }
+
+    const views = await UserView.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+          date: {
+            $gte: new Date(now.getTime() - millisIn15Days * 6),
+            $lte: now,
+          },
+        },
+      },
+      {
+        $project: {
+          date: 1,
+          views: 1,
+        },
+      },
+    ]);
+
+    const viewMap = new Map();
+
+    for (const { date, views: count } of views) {
+      for (const { start, end, label } of ranges) {
+        if (new Date(date) >= start && new Date(date) < end) {
+          viewMap.set(label, (viewMap.get(label) || 0) + count);
+          break;
+        }
+      }
+    }
+
+    const finalData = ranges.map(({ label }) => ({
+      range: label,
+      views: viewMap.get(label) || 0,
+    }));
+
+    return {
+      data: finalData,
+    };
+  },
+
+  incrementUserViews: async (userId: string) => {
+    const today = new Date() ;
+    const startOfDay = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+    ); 
+   const data =  await UserView.updateOne(
+      { userId, date: startOfDay },
+      { $inc: { views: 1 } },
+      { upsert: true },
+    );
+    return data;
   },
 };

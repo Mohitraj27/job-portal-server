@@ -40,6 +40,8 @@ userRouter.post('/delete-user-profile',userController.deleteUserProfile);
 userRouter
   .route('/auth/google')
   .get(passport.authenticate('google', { scope: ['profile', 'email'] }));
+  userRouter.route('/get-user-views').get(userController.getUserViews);
+  userRouter.route('/increment-views').post(userController.incrementUserViews);
 
 userRouter
   .route('/auth/google/callback')

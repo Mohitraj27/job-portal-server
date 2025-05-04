@@ -375,4 +375,52 @@ export const userController = {
       next(error);
     }
   },
+  async getUserViews(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { userId } = req.query;
+      if (!userId) {
+        return throwError(
+          httpStatus.BAD_REQUEST,
+          USER_MESSAGES.USER_ID_REQUIRED,
+        );
+      }
+      const userViews = await userService.getUserViews(userId as string);
+      if (!userViews) {
+        return throwError(httpStatus.NOT_FOUND, USER_MESSAGES.USER_NOT_FOUND);
+      }
+      res.sendResponse(
+        httpStatus.OK,
+        userViews,
+        USER_MESSAGES.USER_VIEWS_FETCHED,
+      );
+    } catch (error) {
+      next(error);
+    }
+  },
+  async incrementUserViews(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId } = req.query;
+      if (!userId) {
+        return throwError(
+          httpStatus.BAD_REQUEST,
+          USER_MESSAGES.USER_ID_REQUIRED,
+        );
+      }
+      const updatedUser = await userService.incrementUserViews(
+        userId as string,
+      );
+
+      res.sendResponse(
+        httpStatus.OK,
+        updatedUser,
+        USER_MESSAGES.USER_VIEWS_INCREMENTED,
+      );
+    } catch (error) {
+      next(error);
+    }
+  },
 };

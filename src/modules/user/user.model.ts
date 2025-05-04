@@ -175,3 +175,12 @@ const userSchema: Schema = new Schema({
 
 const User = mongoose.model<IUser>('User', userSchema);
 export default User;
+
+const UserViewSchema = new Schema({
+  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  views: { type: Number, default: 0 },
+  date: { type: Date, default: () => new Date().toISOString().split('T')[0] },
+});
+
+export const UserView = mongoose.model('UserView', UserViewSchema);
+
