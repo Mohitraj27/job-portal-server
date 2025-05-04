@@ -106,7 +106,11 @@ export const jobseekerDashboardService = {
     const jobs = await JobModel.find({
       status: JobStatus.ACTIVE,
       validTill: { $gte: new Date() },
-    }).lean();
+    }).populate({
+        path: 'createdBy.userId',
+        select: 'employerDetails',
+      })
+      .lean();
     if (jobs.length === 0) return [];
     /**
      * Match % Caluclation
