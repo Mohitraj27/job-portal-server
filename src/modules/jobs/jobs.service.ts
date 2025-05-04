@@ -106,34 +106,6 @@ export const jobService = {
       },
       {
         $sort: { updatedAt: -1 as 1 | -1 },
-      },
-      {
-        $lookup: {
-          from: 'users',  // Your users collection name
-           let: { userId: '$createdBy.userId' },  // Convert string ID to ObjectId if needed
-          pipeline: [
-            { $match: { $expr: { $eq: ["$_id", "$$userId"] } } },
-            // Optionally exclude sensitive fields if needed
-            { $project: { password: 0, secretToken: 0 } }
-          ],
-          as: 'userDetails'
-        }
-      },
-      {
-        $unwind: {
-          path: '$userDetails',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $addFields: {
-          "createdBy.userInfo": "$userDetails"  // Embed user details in createdBy object
-        }
-      },
-      {
-        $project: {
-          userDetails: 0  // Remove the temporary userDetails field
-        }
       }
     ];
 
