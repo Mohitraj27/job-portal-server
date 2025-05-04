@@ -31,6 +31,13 @@ export const jobService = {
 
     const filters = [];
 
+    let salaryObject=null
+    if(salaryRange){
+      salaryObject = JSON.parse(salaryRange);
+    }
+    console.log("educationLevel---------->", educationLevel);
+    let jobsArray=jobType?.split(',').map((item) => item.trim()) || [];
+
     if (keywords) {
       filters.push({
         $or: [
@@ -51,24 +58,26 @@ export const jobService = {
       });
     }
 
-    if (salaryRange?.min || salaryRange?.max) {
+    if (salaryObject?.min || salaryObject?.max) {
       const salaryFilter: Record<string, number> = {};
-      if (salaryRange.min) salaryFilter.$gte = salaryRange.min;
-      if (salaryRange.max) salaryFilter.$lte = salaryRange.max;
+      if (salaryObject.min) salaryFilter.$gte = salaryObject.min;
+      if (salaryObject.max) salaryFilter.$lte = salaryObject.max;
 
       filters.push({ salary: salaryFilter });
     }
 
-    if (educationLevel?.length) {
-      filters.push({ educationLevel: { $in: educationLevel } });
+
+    if (educationLevel) {
+      filters.push({ educationLevel: educationLevel });
     }
 
-    if (jobType?.length) {
-      filters.push({ jobType: { $in: jobType } });
+    if (jobsArray?.length>0) {
+      filters.push({ jobType: { $in: jobsArray } });
     }
 
-    if (experienceLevel?.length) {
-      filters.push({ experienceLevel: { $in: experienceLevel } });
+
+    if (experienceLevel) {
+      filters.push({ experienceLevel: experienceLevel });
     }
     if (userId) {
       filters.push({ createdBy: userId });
