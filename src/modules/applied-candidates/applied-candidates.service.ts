@@ -185,10 +185,10 @@ export const appliedCandidatesService = {
       .limit(limit)
       .populate({
         path: 'jobId',
-        select: 'title company status validTill',
+        select: 'title status validTill',
         populate: {
           path: 'createdBy.userId',
-          select: 'employerDetails',
+          select: 'employerDetails.logoUrl employerDetails.companyName',
         },
       })
       .lean();
