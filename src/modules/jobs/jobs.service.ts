@@ -5,7 +5,8 @@ import { IJob, JobQuery } from './jobs.types';
 import { throwError } from '@utils/throwError';
 import TalentScout from '@modules/talent-scout/talent-scout.model';
 import mongoose from 'mongoose';
-
+import appliedCandidatesModel from '@modules/applied-candidates/applied-candidates.model';
+import jobsbookmarkedModel from '@modules/jobs/bookmark-jobs/bookmark-jobs.model';
 export const jobService = {
   async createJob(data: IJob) {
     const jobCreated = await jobsModel.create(data);
@@ -205,14 +206,33 @@ export const jobService = {
     return await jobsModel.aggregate(pipeline);
   },
 
-  async getSingleJob(jobId: string) {
-    return await jobsModel.findById(jobId)
-      .populate({
-        path: 'createdBy.userId',
-        select: 'employerDetails.companyName employerDetails.logoUrl employerDetails.contactInfo.state employerDetails.contactInfo.city employerDetails.contactInfo.country employerDetails.contactInfo.completeAddress',
-        model: 'User',
-      })
-      .select('-__v -createdAt -updatedAt');
+  async getSingleJob(jobId: string, userId: string) {
+    const job = await jobsModel.findById(jobId).populate({
+      path: 'createdBy.userId',
+      select: 'employerDetails.companyName employerDetails.logoUrl employerDetails.contactInfo.state employerDetails.contactInfo.city employerDetails.contactInfo.country employerDetails.contactInfo.completeAddress',
+      model: 'User',
+    }).select('-__v -createdAt -updatedAt');
+  
+    if (!job) return null;
+
+    const bookmark = await jobsbookmarkedModel.findOne({
+      userId,
+      jobIds: job._id,
+    });
+  
+    const applied = await appliedCandidatesModel.findOne({
+      jobId,
+      candidateId: userId,
+    });
+  
+    const isBookmarked = !!bookmark;
+    const isAppliedBookmarked = !!applied;
+  
+    return {
+      ...job.toObject(),
+      isBookmarked,
+      isAppliedBookmarked,
+    };
   },
 
   async updateJob(jobId: string, updateData: Partial<IJob>) {

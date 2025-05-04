@@ -55,6 +55,7 @@ export interface IJob extends Document {
   applicationsCount: number;
   savedCount: number;
   moderationStatus: JobModerationStatus;
+  isBookmarked: boolean;
   isVerified: boolean;
   createdAt: Date;
   updatedAt: Date;

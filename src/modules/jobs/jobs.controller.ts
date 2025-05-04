@@ -25,7 +25,8 @@ export const jobController = {
 
   async getSingleJob(req: Request, res: Response, next: NextFunction) {
     try {
-      const job = await jobService.getSingleJob(req.params.id);
+      const { jobId, userId } = req.query;
+      const job = await jobService.getSingleJob(jobId as string, userId as string);
       if (!job) {
         return throwError(httpStatus.NOT_FOUND, JOB_MESSAGES.JOB_NOT_FOUND);
       }

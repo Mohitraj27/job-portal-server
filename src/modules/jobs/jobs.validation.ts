@@ -102,9 +102,6 @@ const getAllJobsSchema = z.object({
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
 
-const getSingleJobSchema = z.object({
-  id: z.string(),
-});
 
 const updateJobSchema = z.object({
   updateData: z.object({
@@ -145,7 +142,10 @@ const updateJobSchema = z.object({
     savedCount: z.number().default(0).optional(),
   }),
 });
-
+const getSingleJobSchema = z.object({
+  jobId: z.string().min(1, 'Job ID is required'),
+  userId: z.string().min(1, 'User ID is required'),
+})
 export const validateJobMiddleware = validateSchema(createJobSchema, 'body');
 export const validateDeleteJobMiddleware = validateSchema(
   deleteJobSchema,
