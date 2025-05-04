@@ -12,7 +12,7 @@ import { Role } from '../user/user.types';
 import User from '@modules/user/user.model';
 import jobsModel from '@modules/jobs/jobs.model';
 import { DateFilters } from './applied-candidates.types';
-import { subMonths } from 'date-fns'
+import { subMonths } from 'date-fns';
 export const appliedCandidatesService = {
   async createApplication(data: IAppliedCandidate) {
     const existingApplication = await appliedCandidatesModel.findOne({
@@ -127,7 +127,7 @@ export const appliedCandidatesService = {
   async getApplicationsByCandidate(
     candidateId: string,
     query: Partial<AppliedCandidateQuery> = {
-      appliedDateFilter: DateFilters.LAST_MONTH
+      appliedDateFilter: DateFilters.LAST_MONTH,
     },
   ) {
     const {
@@ -145,7 +145,7 @@ export const appliedCandidatesService = {
     if (status) {
       filters.status = status;
     }
-    if(appliedDateFilter){
+    if (appliedDateFilter) {
       let startDate: Date;
       const today = new Date();
       switch (appliedDateFilter) {
@@ -165,7 +165,8 @@ export const appliedCandidatesService = {
           throw new Error('Invalid date filter');
       }
       filters.appliedDate = { $gte: startDate };
-    }    if (shortlist === 'true') {
+    }
+    if (shortlist === 'true') {
       filters.isShortlisted = true;
     }
     if (shortlist !== undefined) {
@@ -178,7 +179,7 @@ export const appliedCandidatesService = {
     sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
 
     const total = await appliedCandidatesModel.countDocuments(filters);
-    const applications = await appliedCandidatesModel
+    const applicationsList = await appliedCandidatesModel
       .find(filters)
       .sort(sort)
       .skip(skip)
@@ -188,10 +189,38 @@ export const appliedCandidatesService = {
         select: 'title status validTill',
         populate: {
           path: 'createdBy.userId',
-          select: 'employerDetails.logoUrl employerDetails.companyName employerDetails.contactInfo',
+          select:
+            'employerDetails.logoUrl employerDetails.companyName employerDetails.contactInfo',
         },
       })
       .lean();
+
+    const jobIds = applicationsList
+      .map((app) => app.jobId?._id)
+      .filter(Boolean);
+
+    // Find all jobs applied by this candidate among these jobIds
+    const candidateApplications = await appliedCandidatesModel
+      .find({
+        candidateId,
+        jobId: { $in: jobIds },
+      })
+      .select('jobId')
+      .lean();
+
+    // Create a Set of jobIds the candidate has applied for
+    const appliedJobIdsSet = new Set(
+      candidateApplications.map((c) => String(c.jobId)),
+    );
+
+    // Add `isAppliedTrue` to each application if candidate has applied to that job
+    const applications = applicationsList.map((app) => ({
+      ...app,
+      jobId: {
+        ...app.jobId,
+        isAppliedTrue: appliedJobIdsSet.has(String(app.jobId?._id)),
+      },
+    }));
 
     return {
       applications,
@@ -307,39 +336,46 @@ export const appliedCandidatesService = {
     });
   },
 
-  async toggleBookmark(jobId: string, candidateId: string, isBookmarked: boolean) {
+  async toggleBookmark(
+    jobId: string,
+    candidateId: string,
+    isBookmarked: boolean,
+  ) {
     const application = await appliedCandidatesModel.findOne({
       jobId,
-      candidateId
+      candidateId,
     });
-    
+
     if (!application) {
       return throwError(
         httpStatus.NOT_FOUND,
-        APPLIED_CANDIDATES_MESSAGES.APPLICATION_NOT_FOUND
+        APPLIED_CANDIDATES_MESSAGES.APPLICATION_NOT_FOUND,
       );
     }
-    
+
     application.isBookmarked = isBookmarked;
     application.updatedAt = new Date();
-    
+
     return await application.save();
   },
   async getShortlistedCandidatesdata(jobId: string) {
-    const data = await appliedCandidatesModel.find({ jobId, isShortlisted: true })
+    const data = await appliedCandidatesModel
+      .find({ jobId, isShortlisted: true })
       .populate({
         path: 'candidateId',
-        select: 'role personalDetails.firstName personalDetails.lastName personalDetails.email personalDetails.profilePicture jobSeekerDetails.professionalDetails',
+        select:
+          'role personalDetails.firstName personalDetails.lastName personalDetails.email personalDetails.profilePicture jobSeekerDetails.professionalDetails',
       })
       .populate({
         path: 'jobId',
-        select: 'title description location skills education experience company numberOfOpenings createdAt',
+        select:
+          'title description location skills education experience company numberOfOpenings createdAt',
       });
-  
-    return data.map(application => {
+
+    return data.map((application) => {
       const candidate = application.candidateId as any;
       const job = application.jobId as any;
-  
+
       return {
         _id: application._id,
         isBookmarked: application.isBookmarked,
@@ -358,8 +394,9 @@ export const appliedCandidatesService = {
           lastName: candidate?.personalDetails?.lastName,
           email: candidate?.personalDetails?.email,
           phone: candidate?.personalDetails?.phone,
-          professionalDetails: candidate.jobSeekerDetails?.professionalDetails || {}
-        }
+          professionalDetails:
+            candidate.jobSeekerDetails?.professionalDetails || {},
+        },
       };
     });
   },
