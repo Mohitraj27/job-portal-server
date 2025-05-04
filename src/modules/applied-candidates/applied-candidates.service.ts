@@ -188,7 +188,7 @@ export const appliedCandidatesService = {
         select: 'title status validTill',
         populate: {
           path: 'createdBy.userId',
-          select: 'employerDetails.logoUrl employerDetails.companyName',
+          select: 'employerDetails.logoUrl employerDetails.companyName employerDetails.contactInfo',
         },
       })
       .lean();
