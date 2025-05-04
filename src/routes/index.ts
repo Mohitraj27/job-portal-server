@@ -11,6 +11,7 @@ import talentScoutRouter from '@modules/talent-scout/talent-scout.route';
 import dashboardRouter from '@modules/dashboard/dashboard.routes';
 import jobSeekerdashboardRouter from '@modules/job-seeker-dashboard/job-seeker-dashboard.routes';
 import createJobAlertsforJobSeekersRouter from '@modules/job-alerts/job-alerts.routes';
+import bookmarkJobsRouter from '@modules/jobs/bookmark-jobs/bookmark-jobs.routes';
 const router = Router();
 
 router.use('/users', userRouter);
@@ -25,4 +26,5 @@ router.use('/talent-scout',talentScoutRouter);
 router.use('/dashboard',dashboardRouter);
 router.use('/job-seeker-dashboard',jobSeekerdashboardRouter);
 router.use('/job-alerts-for-jobseekers',createJobAlertsforJobSeekersRouter);
+router.use('/bookmark-jobs',bookmarkJobsRouter);
 export default router;
