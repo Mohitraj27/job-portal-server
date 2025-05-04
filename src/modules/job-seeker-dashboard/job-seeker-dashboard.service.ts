@@ -92,11 +92,9 @@ export const jobseekerDashboardService = {
     const user = await User.findOne({
       _id: userId,
       role: Role.JOBSEEKER,
-    })
-      .select(
+    }).select(
         'jobSeekerDetails.professionalDetails.skills jobSeekerDetails.professionalDetails.currentJobTitle',
-      )
-      .lean();
+      ).lean();
 
     if (!user || !user.jobSeekerDetails?.professionalDetails) return [];
 
@@ -109,9 +107,17 @@ export const jobseekerDashboardService = {
     }).populate({
         path: 'createdBy.userId',
         select: 'employerDetails',
-      })
-      .lean();
-    if (jobs.length === 0) return [];
+      }).lean();
+      if (jobs.length === 0) return [];
+      const jobIds = jobs.map((job) => job._id);
+      const appliedJobs = await AppliedCandidatesModel.find({
+        candidateId: userId,
+        jobId: { $in: jobIds },
+      }).select('jobId').lean();
+      const appliedJobIdSet = new Set(appliedJobs.map((entry) => entry.jobId.toString()));
+      // Filter out already applied jobs
+      const notAppliedJobs = jobs.filter((job) => !appliedJobIdSet.has(job._id.toString()));
+      if (notAppliedJobs?.length === 0) return [];
     /**
      * Match % Caluclation
      * Job requires: ["JavaScript", "Node.js", "React", "MongoDB"]
@@ -123,9 +129,10 @@ export const jobseekerDashboardService = {
       (2 / 4) * 70 = 35% → added to the score.
       70 % of the skills match and 30% of the title match
       also if title matches then add 30% to the score and if not match it with skills only
+      Jobs Recommendation will not come for Applied Jobs
      */
     const recommendedJobs = await calculateJobMatches(
-      jobs,
+      notAppliedJobs,
       currentJobTitle,
       skills,
     );
