@@ -20,6 +20,15 @@ export const MessagesController = {
     } catch (error) {
       next(error);
     }
+  },
+  async getMessageCountforJobSeeker(req:Request, res:Response, next: NextFunction){
+    const { userId } = req.query;
+    try{
+      const countData = await MessagesService.MessageCountforJobSeeker(userId as string);
+      res.sendResponse(200,countData, MESSAGES_WEB_SOCKETS.MESSAGE_COUNT);
+    }catch(error){
+      next(error);
+    }
   }
 }
 
