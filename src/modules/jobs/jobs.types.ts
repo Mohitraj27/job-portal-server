@@ -57,7 +57,7 @@ export interface IJob extends Document {
   moderationStatus: JobModerationStatus;
   isBookmarked: boolean;
   isVerified: boolean;
-  keyResponsibilites: string[],
+  keyResponsibilites: string;
   createdAt: Date;
   updatedAt: Date;
 }
