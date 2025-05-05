@@ -10,6 +10,7 @@ import crypto from 'crypto';
 import { sendEmail } from '@utils/emailService';
 import passwordResetTemplate from '@email_template/forgetPassword';
 import mongoose from 'mongoose';
+import { Role } from '../user/user.types';
 export const userService = {
   registerUser: async (userData: Partial<IUser>): Promise<IUser> => {
     const existingUser = await User.findOne({
@@ -177,11 +178,20 @@ export const userService = {
     return updatedUser;
   },
   updateUserProfilePicture: async (userId: any, profilePictureUrl: string) => {
-    return await User.findByIdAndUpdate(
-      userId,
-      { 'personalDetails.profilePicture': profilePictureUrl },
-      { new: true },
-    );
+    const user = await User.findById(userId);
+    if (user?.role === Role.EMPLOYER) {
+      return await User.findByIdAndUpdate(
+        userId,
+        { 'employerDetails.logoUrl': profilePictureUrl },
+        { new: true },
+      );
+    } else {
+      return await User.findByIdAndUpdate(
+        userId,
+        { 'personalDetails.profilePicture': profilePictureUrl },
+        { new: true },
+      );
+    }
   },
   updateResume: async (
     userId: any,

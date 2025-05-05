@@ -37,13 +37,7 @@ export const talentScoutService = {
             select: 'personalDetails.firstName personalDetails.lastName personalDetails.email personalDetails.profilePicture jobSeekerDetails.professionalDetails',
             match: { isDeleted: false }
         });
-        console.log('this is data found From TalentScout Model',data);
-        console.log('type of ',typeof data);
-        // If no entries with candidateId, run matching logic once
         if (existingEntries.length === 0) {
-            // This can be queued in future (e.g., Bull Queue)
-            console.log('this is jobIdObject',jobIdObject);
-            console.log('this is data',data);
             await talentScoutService.updateMatchCounts(jobIdObject as object, data as object);
         }
         return data;
