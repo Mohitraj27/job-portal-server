@@ -21,7 +21,7 @@ const JobSchema: Schema<IJob> = new Schema({
     website: { type: String },
   },
   category: { type:String,required: true },
-
+  keyResponsibilites: [{ type: String }],
   location: {
     city: { type: String },
     state: { type: String },

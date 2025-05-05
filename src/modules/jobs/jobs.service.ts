@@ -187,6 +187,7 @@ export const jobService = {
           applicationsCount: 1,
           savedCount: 1,
           moderationStatus: 1,
+          keyResponsibilites: 1,
           createdAt: 1,
           updatedAt: 1,
           createdByDetails: {
