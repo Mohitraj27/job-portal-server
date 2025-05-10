@@ -1,4 +1,4 @@
-# Job Portal Backend
+# Job Portal 
 
 A scalable and production-ready backend for a Job Portal application, built with **Node.js**, **TypeScript**, and **MongoDB**, and deployed on **AWS**. This backend is designed to efficiently handle over **10,000+ concurrent users**, following clean architecture and best coding practices.
 
