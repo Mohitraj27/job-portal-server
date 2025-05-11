@@ -14,6 +14,7 @@ import createJobAlertsforJobSeekersRouter from '@modules/job-alerts/job-alerts.r
 import bookmarkJobsRouter from '@modules/jobs/bookmark-jobs/bookmark-jobs.routes';
 import email_campaignRouter from '@modules/email_campaign/email_campaign.route';
 import content_managementRouter from '@modules/content_management/content_management.route';
+import admin_dashboardRouter from '@modules/admin_dashboard/admin_dashboard.route';
 const router = Router();
 
 router.use('/users', userRouter);
@@ -31,4 +32,5 @@ router.use('/job-alerts-for-jobseekers',createJobAlertsforJobSeekersRouter);
 router.use('/bookmark-jobs',bookmarkJobsRouter);
  router.use('/email_campaign', email_campaignRouter); 
 router.use('/content-management', content_managementRouter);
+router.use('/admin-dashboard', admin_dashboardRouter);
 export default router;
