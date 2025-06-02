@@ -71,4 +71,40 @@ export const uploadResumeToS3 = (file: Express.Multer.File): Promise<string> => 
   });
 };
 
-module.exports = { uploadProfilePictureToS3 ,uploadResumeToS3, upload,uploadResume};
+export const uploadResumeDocumentationToS3 = (file: Express.Multer.File, fileType: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    let folderName = '';
+    switch (fileType) {
+      case 'uploadResume':
+        folderName = 'resumes';
+        break;
+      case 'uploadPhoto':
+        folderName = 'photos';
+        break;
+      case 'uploadCertificates':
+        folderName = 'certificates';
+        break;
+      default:
+        folderName = 'documents';
+    }
+
+    const params = {
+      Bucket: process.env.BUCKET_NAME || 'squadra-media',
+      Key: `resumeDocumentation/${folderName}/${Date.now()}-${file.originalname}`,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+      Metadata: { 'x-amz-meta-title': file.originalname },
+      ACL: 'public-read'
+    };
+
+    s3.upload(params, (err: any, data: { Location: string | PromiseLike<string>; }) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data.Location);
+      }
+    });
+  });
+};
+
+module.exports = { uploadProfilePictureToS3 ,uploadResumeToS3, upload,uploadResume,uploadResumeDocumentationToS3};
