@@ -17,17 +17,27 @@ const userSchema: Schema = new Schema({
     required: true,
   },
   personalDetails: {
-    firstName: { type: String,  },
+    firstName: { type: String },
     lastName: { type: String },
     email: { type: String, required: true, unique: true },
     phoneNumber: {
       countryCode: { type: String },
       number: { type: String },
     },
+    alternateMobileNo: { type: String },
     password: { type: String },
     profilePicture: { type: String },
     age: { type: String },
     gender: { type: String, enum: Object.values(Gender) },
+    maritalStatus: {
+      type: String,
+    },
+    physicalDisability: { type: String },
+    visaStatus: {
+      type: String,
+    },
+    nationality: { type: String },
+
     bio: { type: String },
     address: {
       street: { type: String },
@@ -46,16 +56,17 @@ const userSchema: Schema = new Schema({
     },
   ],
   jobSeekerDetails: {
+    locationDetails: {},
     education: [
       {
-       qualification: { type: String },
-        institution: { type: String },
-        startDate: { type: Date },
-        endDate: { type: Date },
-        description: { type: String },
-        grade: { type: String },
+        highestQualification: { type: String },
+        specialization: { type: String },
+        universityInstitute: { type: String },
+        yearOfPassing: { type: Date },
+        marksCGPA: { type: String },
       },
     ],
+
     achivements: [
       {
         title: { type: String },
@@ -70,7 +81,9 @@ const userSchema: Schema = new Schema({
         jobTitle: { type: String },
         startDate: { type: Date },
         endDate: { type: Date },
+        totalExperience: { type: Number },
         keyAchievements: { type: String },
+        jobResponsibilities: { type: String },
       },
     ],
     professionalDetails: {
@@ -101,11 +114,31 @@ const userSchema: Schema = new Schema({
     },
     jobPreferences: {
       preferredJobTitles: [{ type: String }],
+      preferredJobType: { type: String },
       preferredLocations: [{ type: String }],
+      preferredJobRole: { type: String },
+      shiftPreference: { type: String },
       preferredIndustries: [{ type: String }],
       workType: { type: String, enum: [...Object.values(WorkType)] },
       expectedSalary: { type: Number },
+      jobLevel: { type: String },
       jobAlerts: { type: Boolean, default: true },
+    },
+    languagesKnown: [
+      {
+        language: { type: String },
+        proficiency: { type: String },
+      },
+    ],
+    resumeDocmentation: {
+      uploadResume: { type: String },
+      uploadPhoto: { type: String },
+      uploadCertificates: { type: String },
+    },
+    socialPortfolioLinks:{
+      linkedinProfile: { type: String },
+      portfolio:{ type: String },
+      personalWebsite: { type: String },
     },
     applicationsHistory: [
       {
@@ -147,7 +180,7 @@ const userSchema: Schema = new Schema({
       state: { type: String },
       city: { type: String },
       completeAddress: { type: String },
-    }
+    },
 
     // jobPostings: [
 
@@ -183,4 +216,3 @@ const UserViewSchema = new Schema({
 });
 
 export const UserView = mongoose.model('UserView', UserViewSchema);
-
