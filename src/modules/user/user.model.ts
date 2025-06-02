@@ -86,6 +86,7 @@ const userSchema: Schema = new Schema({
         jobResponsibilities: { type: String },
       },
     ],
+    keySkills: [{ type: String }],
     professionalDetails: {
       website: { type: String },
       linkedIn: { type: String },

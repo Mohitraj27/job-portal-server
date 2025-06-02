@@ -18,7 +18,7 @@ const userRouter = Router();
 userRouter.use(responseMiddleware);
 
 userRouter.route('/register').post(userController.register);
-userRouter.route('/update-profile').put(validateUpdateUserMiddleware,userController.updateProfile);
+userRouter.route('/update-profile').put(userController.updateProfile);
 userRouter.route('/login').post(validateLoginMiddleware, userController.login);
 userRouter
   .route('/forget-password')
