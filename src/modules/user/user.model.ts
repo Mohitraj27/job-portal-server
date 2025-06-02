@@ -56,14 +56,19 @@ const userSchema: Schema = new Schema({
     },
   ],
   jobSeekerDetails: {
-    locationDetails: {},
+    locationDetails: {
+
+    },
     education: [
       {
         highestQualification: { type: String },
         specialization: { type: String },
         universityInstitute: { type: String },
-        yearOfPassing: { type: Date },
+        yearOfPassing: { type: String }, 
         marksCGPA: { type: String },
+        startDate: { type: Date },
+        endDate: { type: Date },
+        description: { type: String },
       },
     ],
 
@@ -136,9 +141,9 @@ const userSchema: Schema = new Schema({
       uploadPhoto: { type: String },
       uploadCertificates: { type: String },
     },
-    socialPortfolioLinks:{
+    socialPortfolioLinks: {
       linkedinProfile: { type: String },
-      portfolio:{ type: String },
+      portfolio: { type: String },
       personalWebsite: { type: String },
     },
     applicationsHistory: [

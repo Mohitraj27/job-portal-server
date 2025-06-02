@@ -157,8 +157,15 @@ export const userService = {
         $set: {
           personalDetails:
             updateData?.personalDetails || existingUser?.personalDetails,
-          jobSeekerDetails:
-            updateData?.jobSeekerDetails || existingUser?.jobSeekerDetails,
+            jobSeekerDetails: {
+              ...existingUser?.jobSeekerDetails,
+              ...updateData?.jobSeekerDetails,
+              education: updateData?.jobSeekerDetails?.education?.map(({ _id, ...edu }) => ({
+                ...edu,
+                // optionally convert fields like yearOfPassing, startDate, endDate
+                yearOfGraduation: edu.yearOfGraduation ? String(edu.yearOfGraduation) : undefined,
+              })) || existingUser?.jobSeekerDetails?.education,
+            },
           employerDetails:
             updateData?.employerDetails || existingUser?.employerDetails,
           activityDetails:
