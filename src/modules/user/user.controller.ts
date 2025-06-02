@@ -4,7 +4,7 @@ import { throwError } from '@utils/throwError';
 import httpStatus from '@utils/httpStatus';
 import { USER_MESSAGES } from './user.enum';
 import User from './user.model';
-import { uploadProfilePictureToS3, uploadResumeToS3 } from '@utils/aws_helper';
+import { uploadProfilePictureToS3, uploadResumeToS3,uploadResumeDocumentationToS3 } from '@utils/aws_helper';
 
 export const userController = {
   register: async (
@@ -418,6 +418,58 @@ export const userController = {
         httpStatus.OK,
         updatedUser,
         USER_MESSAGES.USER_VIEWS_INCREMENTED,
+      );
+    } catch (error) {
+      next(error);
+    }
+  },
+  uploadResumeDocumentation: async (req: Request,res: Response,next: NextFunction,): Promise<void> => {
+    try {
+      const { userId } = req.query;
+      const { typeofFile } = req.body;
+      const documentFile = req.file as Express.Multer.File;
+  
+      if (!documentFile) {return throwError(httpStatus.BAD_REQUEST,USER_MESSAGES.DOCUMENT_FILE_NOT_PROVIDED);
+      }
+  
+      if (!typeofFile) {
+        return throwError(
+          httpStatus.BAD_REQUEST,
+          USER_MESSAGES.FILE_TYPE_NOT_PROVIDED,
+        );
+      }
+  
+      const allowedFileTypes = ['uploadResume', 'uploadPhoto', 'uploadCertificates'];
+      if (!allowedFileTypes.includes(typeofFile)) {
+        return throwError(
+          httpStatus.BAD_REQUEST,
+          USER_MESSAGES.INVALID_FILE_TYPE,
+        );
+      }
+  
+      const documentUrl: any = await uploadResumeDocumentationToS3(
+        documentFile,
+        typeofFile
+      );
+  
+      if (!documentUrl) {
+        return throwError(httpStatus.INTERNAL_SERVER_ERROR, USER_MESSAGES.FAILED_TO_UPLOAD_DOCUMENT);
+      }
+  
+      const updatedUser = await userService.updateUserResumeDocumentation(
+        userId,
+        typeofFile,
+        documentUrl,
+      );
+  
+      if (!updatedUser) {
+        return throwError(httpStatus.NOT_FOUND, USER_MESSAGES.USER_NOT_FOUND);
+      }
+  
+      res.sendResponse(
+        httpStatus.OK,
+        updatedUser,
+        USER_MESSAGES.USER_DOCUMENT_UPDATED,
       );
     } catch (error) {
       next(error);

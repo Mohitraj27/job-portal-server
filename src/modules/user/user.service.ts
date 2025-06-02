@@ -293,4 +293,19 @@ export const userService = {
     );
     return data;
   },
+  updateUserResumeDocumentation: async (userId: any,fileType: string,documentUrl: string) => {
+    try {
+      const updateQuery: any = {};
+      updateQuery[`jobSeekerDetails.resumeDocmentation.${fileType}`] = documentUrl;
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { $set: updateQuery },
+        { new: true, runValidators: true }
+      ).select('-password');
+  
+      return updatedUser;
+    } catch (error) {
+      throw error;
+    }
+  }
 };
