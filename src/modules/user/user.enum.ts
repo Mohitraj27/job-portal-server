@@ -32,6 +32,11 @@ export enum USER_MESSAGES {
   USER_PROFILE_DELETED = 'User profile deleted successfully',
   USER_VIEWS_INCREMENTED = 'User views incremented successfully',
   USER_VIEWS_FETCHED= 'User views fetched successfully',
+  DOCUMENT_FILE_NOT_PROVIDED = 'Document File Not Provided',
+  FILE_TYPE_NOT_PROVIDED = 'File Type Not Provided',
+  INVALID_FILE_TYPE = 'Invalid File Type',
+  FAILED_TO_UPLOAD_DOCUMENT = 'Failed to Upload Documentation to s3',
+  USER_DOCUMENT_UPDATED = 'User Document Updated successfully',
 }
 
 

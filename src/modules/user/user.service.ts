@@ -157,8 +157,15 @@ export const userService = {
         $set: {
           personalDetails:
             updateData?.personalDetails || existingUser?.personalDetails,
-          jobSeekerDetails:
-            updateData?.jobSeekerDetails || existingUser?.jobSeekerDetails,
+            jobSeekerDetails: {
+              ...existingUser?.jobSeekerDetails,
+              ...updateData?.jobSeekerDetails,
+              education: updateData?.jobSeekerDetails?.education?.map(({ _id, ...edu }) => ({
+                ...edu,
+                // optionally convert fields like yearOfPassing, startDate, endDate
+                yearOfGraduation: edu.yearOfGraduation ? String(edu.yearOfGraduation) : undefined,
+              })) || existingUser?.jobSeekerDetails?.education,
+            },
           employerDetails:
             updateData?.employerDetails || existingUser?.employerDetails,
           activityDetails:
@@ -293,4 +300,19 @@ export const userService = {
     );
     return data;
   },
+  updateUserResumeDocumentation: async (userId: any,fileType: string,documentUrl: string) => {
+    try {
+      const updateQuery: any = {};
+      updateQuery[`jobSeekerDetails.resumeDocmentation.${fileType}`] = documentUrl;
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { $set: updateQuery },
+        { new: true, runValidators: true }
+      ).select('-password');
+  
+      return updatedUser;
+    } catch (error) {
+      throw error;
+    }
+  }
 };

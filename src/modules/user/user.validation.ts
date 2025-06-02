@@ -233,8 +233,7 @@ export const validateProfilePictureMiddleware = validateSchema(
   profilePictureSchema,
   'query',
 );
-
-export const validateResumeUploadMiddleware = validateSchema(
+export const validateDocumentUploadMiddleware = validateSchema(
   resumeUploadSchema,
   'query',
 );

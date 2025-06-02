@@ -32,6 +32,7 @@ interface SocialLogin {
 }
 
 interface Education {
+  _id?: mongoose.Types.ObjectId;
   qualification: string;
   specialization: string;
   institutionName: string;
