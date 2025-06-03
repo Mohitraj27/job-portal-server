@@ -13,5 +13,15 @@ export const locationService = {
   async getCities(query: { stateId?: string }) {
     const { stateId } = query;
     return await Cities.find(stateId ? { stateId } : {});
+  },
+  async getAllLocations(query:{search?: string}) {
+    const { search } = query;
+    const data = await Promise.all([
+      Countries.find({ name: { $regex: search || '', $options: 'i' } }),
+      States.find({ name: { $regex: search || '', $options: 'i' } }),
+      Cities.find({ name: { $regex: search || '', $options: 'i' } }),
+    ]);
+
+    return [...data[0], ...data[1], ...data[2]];
   }
 };
