@@ -7,7 +7,6 @@ import {
   validateLoginMiddleware,
   validateResetPasswordMiddleware,
   validateChangePasswordMiddleware,
-  validateUpdateUserMiddleware,
   validateProfilePictureMiddleware,
   validateDocumentUploadMiddleware,
 } from './user.validation';
