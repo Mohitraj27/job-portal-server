@@ -96,9 +96,21 @@ interface ApplicationsHistory {
   appliedDate: Date;
 }
 
+interface ProfessionalExperience {
+  _id?: mongoose.Types.ObjectId;
+  companyName: string;
+  jobTitle: string;
+  startDate: Date;
+  endDate: Date;
+  totalExperience: number;
+  keyAchievements: string;
+  jobResponsibilities: string;
+}
+
 interface JobSeekerDetails {
   education: Education[];
   professionalDetails: ProfessionalDetails;
+  professionalExperience: ProfessionalExperience[];
   jobPreferences: JobPreferences;
   applicationsHistory: ApplicationsHistory[];
 }
