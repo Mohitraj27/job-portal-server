@@ -177,23 +177,34 @@ export const userController = {
 
       // Only include fields if they exist (optional step for cleaner payload)
       if (body.personalDetails) {
+        const personalDetails = body.personalDetails;
+
         userPayload.personalDetails = {
           firstName: personalDetails.firstName,
           lastName: personalDetails.lastName,
-          age: personalDetails.age,
-          bio: personalDetails.bio,
-          address: personalDetails.address,
+          email: personalDetails.email,
           phoneNumber: {
             number: phoneNumber.number,
             countryCode: phoneNumber.countryCode,
           },
-          languages: personalDetails.languages,
-          profilePicture: personalDetails.profilePicture,
-          gender: personalDetails.gender,
-          email: personalDetails.email,
+          alternateMobileNo: personalDetails.alternateMobileNo,
           dateOfBirth: personalDetails.dateOfBirth,
+          gender: personalDetails.gender,
+          maritalStatus: personalDetails.maritalStatus,
+          physicalDisability: personalDetails.physicalDisability,
+          visaStatus: personalDetails.visaStatus,
+          nationality: personalDetails.nationality,
+          profilePicture: personalDetails.profilePicture,
+          address: personalDetails.address || {
+            street: '',
+            city: '',
+            state: '',
+            country: '',
+            zipCode: '',
+          },
         };
       }
+      
 
       if (body.jobSeekerDetails) {
         userPayload.jobSeekerDetails = body.jobSeekerDetails;
