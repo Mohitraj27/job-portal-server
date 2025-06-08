@@ -157,15 +157,28 @@ export const userService = {
         $set: {
           personalDetails:
             updateData?.personalDetails || existingUser?.personalDetails,
-            jobSeekerDetails: {
-              ...existingUser?.jobSeekerDetails,
-              ...updateData?.jobSeekerDetails,
-              education: updateData?.jobSeekerDetails?.education?.map(({ _id, ...edu }) => ({
-                ...edu,
-                // optionally convert fields like yearOfPassing, startDate, endDate
-                yearOfGraduation: edu.yearOfGraduation ? String(edu.yearOfGraduation) : undefined,
-              })) || existingUser?.jobSeekerDetails?.education,
-            },
+          jobSeekerDetails: {
+            ...existingUser?.jobSeekerDetails,
+            ...updateData?.jobSeekerDetails,
+            education:
+              updateData?.jobSeekerDetails?.education?.map(
+                ({ _id, ...edu }) => ({
+                  ...edu,
+                  yearOfGraduation: edu.yearOfGraduation
+                    ? String(edu.yearOfGraduation)
+                    : undefined,
+                }),
+              ) || existingUser?.jobSeekerDetails?.education,
+
+            professionalExperience:
+              updateData?.jobSeekerDetails?.professionalExperience?.map(
+                ({ _id, ...exp }) => ({
+                  ...exp,
+                  // Optionally convert fields like startDate, endDate if needed
+                }),
+              ) || existingUser?.jobSeekerDetails?.professionalExperience,
+          },
+
           employerDetails:
             updateData?.employerDetails || existingUser?.employerDetails,
           activityDetails:
@@ -287,32 +300,37 @@ export const userService = {
   },
 
   incrementUserViews: async (userId: string) => {
-    const today = new Date() ;
+    const today = new Date();
     const startOfDay = new Date(
       today.getFullYear(),
       today.getMonth(),
       today.getDate(),
-    ); 
-   const data =  await UserView.updateOne(
+    );
+    const data = await UserView.updateOne(
       { userId, date: startOfDay },
       { $inc: { views: 1 } },
       { upsert: true },
     );
     return data;
   },
-  updateUserResumeDocumentation: async (userId: any,fileType: string,documentUrl: string) => {
+  updateUserResumeDocumentation: async (
+    userId: any,
+    fileType: string,
+    documentUrl: string,
+  ) => {
     try {
       const updateQuery: any = {};
-      updateQuery[`jobSeekerDetails.resumeDocmentation.${fileType}`] = documentUrl;
+      updateQuery[`jobSeekerDetails.resumeDocmentation.${fileType}`] =
+        documentUrl;
       const updatedUser = await User.findByIdAndUpdate(
         userId,
         { $set: updateQuery },
-        { new: true, runValidators: true }
+        { new: true, runValidators: true },
       ).select('-password');
-  
+
       return updatedUser;
     } catch (error) {
       throw error;
     }
-  }
+  },
 };

@@ -36,5 +36,16 @@ export const locationController = {
     } catch (error) {
       next(error);
     }
+  },
+  async getAllLocations(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = await locationService.getAllLocations(req.query);
+      if (!data) {
+        return throwError(httpStatus.NOT_FOUND, LOCATION_MESSAGES.NOT_FOUND);
+      }
+      res.sendResponse(httpStatus.OK, data, LOCATION_MESSAGES.FETCHED);
+    } catch (error) {
+      next(error);
+    }
   }
 };
