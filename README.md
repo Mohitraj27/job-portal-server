@@ -1,4 +1,3 @@
-# Job Portal Application
 
 ## ❓ Problem Statement
 Job portal platforms usually face significant challenges in handling large-scale user traffic, resulting in slow query performance, poor user experience, and system instability. Managing complex job matching algorithms and user data operations becomes increasingly difficult as the platform grows.
