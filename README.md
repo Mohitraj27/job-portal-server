@@ -1,6 +1,12 @@
 # Job Portal Application
 
-A scalable and production-ready backend for a Job Portal application, built with **Node.js**, **TypeScript**, and **MongoDB**, and deployed on **AWS**. This backend is designed to efficiently handle over **10,000+ concurrent users**, following clean architecture and best coding practices.
+## ❓ Problem Statement
+Job portal platforms usually face significant challenges in handling large-scale user traffic, resulting in slow query performance, poor user experience, and system instability. Managing complex job matching algorithms and user data operations becomes increasingly difficult as the platform grows.
+
+
+
+## ✅ Solution
+So, I designed and developed a scalable monolithic backend system using Node.js, TypeScript, and MongoDB deployed on AWS. Implemented MongoDB aggregation pipelines for optimized data retrieval, integrated rate limiting and Zod validation for security, and followed clean architecture principles with modular design and centralized error handling to efficiently support 100k+ concurrent users.
 
 ## 🚀 Features
 
